@@ -30,7 +30,7 @@ None — all MVP scope decisions complete.
 DataCheck CSV Quality Analyzer
 
 ### Purpose
-A web application that accepts service requests with CSV uploads, analyzes CSV files for basic data quality issues, and provides analysis summaries. Built as a hiring assessment project to demonstrate full-stack development with zero-cost deployment.
+A web application that accepts service requests with CSV uploads, analyzes CSV files for basic data quality issues, and provides analysis summaries. Built as a hiring assessment project to development with zero-cost deployment.
 
 ### Target Users
 - Hiring managers evaluating technical assessment submissions

@@ -28,6 +28,11 @@ def client():
     app.config['TESTING'] = True
     # Initialize fresh database for each test session
     init_db()
+    
+    # Reset rate limiter before tests
+    from app.rate_limiter import reset_rate_limiter
+    reset_rate_limiter()
+    
     with app.test_client() as client:
         yield client
 

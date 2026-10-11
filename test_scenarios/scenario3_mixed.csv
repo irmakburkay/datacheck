@@ -1,0 +1,7 @@
+product,category,in_stock,price,rating,reviews
+Laptop,Electronics,yes,999.99,4.5,127
+Mouse,Electronics,yes,29.99,4.2,89
+Keyboard,Electronics,no,79.99,4.7,234
+Monitor,Electronics,yes,349.99,4.4,156
+Webcam,Electronics,yes,89.99,3.9,67
+Headset,Electronics,,,,

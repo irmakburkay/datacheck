@@ -1,7 +1,7 @@
 # DataCheck — CSV Data Quality Analyzer
 
 A lightweight web application that analyzes CSV files for common data quality issues.
-Built as a hiring assessment project demonstrating full-stack Python development.
+Built as a hiring assessment project development.
 
 **Current status**: Live and verified on PythonAnywhere (Flask/WSGI). UI redesigned, custom error pages added, all endpoints operational.
 

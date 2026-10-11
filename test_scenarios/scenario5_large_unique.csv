@@ -1,0 +1,11 @@
+transaction_id,amount,category
+TXN001,150.00,Food
+TXN002,45.99,Transport
+TXN003,200.00,Food
+TXN004,12.50,Transport
+TXN005,89.99,Entertainment
+TXN006,34.50,Food
+TXN007,78.00,Transport
+TXN008,120.00,Food
+TXN009,45.99,Entertainment
+TXN010,200.00,Food

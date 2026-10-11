@@ -1,0 +1,7 @@
+user,action,timestamp
+alice,login,2024-10-12 09:00
+bob,view,2024-10-12 09:05
+alice,logout,2024-10-12 09:30
+alice,login,2024-10-12 09:00
+charlie,purchase,2024-10-12 10:00
+bob,view,2024-10-12 09:05

@@ -300,7 +300,7 @@ details server-side.
 
 **Decision**: Replace the minimal functional UI with a full landing page design using a professional light theme (white/grey, Inter font, blue accent). No external CSS frameworks or icon libraries — all inline SVG and vanilla CSS.
 
-**Context**: The original UI was a plain form on a grey background. The assessment rubric scores usability and accessibility (10 pts). A landing page structure better communicates the product's value and demonstrates full-stack design capability.
+**Context**: The original UI was a plain form on a grey background. The assessment rubric scores usability and accessibility (10 pts). A landing page structure better communicates the product's value and design capability.
 
 **Design decisions**:
 - Light theme (`#f9fafb` background, `#ffffff` cards) — readable, professional, not trendy

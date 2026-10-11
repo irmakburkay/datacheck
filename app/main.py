@@ -7,6 +7,7 @@ import logging
 
 from app.database import init_db, get_request, save_request
 from app.analyzer import analyze
+from app.rate_limiter import rate_limit
 
 app = Flask(__name__)
 
@@ -59,6 +60,7 @@ def index():
     return render_template("index.html")
 
 @app.route("/api/analyze", methods=["POST"])
+@rate_limit(limit=10, window=60)  # 10 requests per minute per IP
 def analyze_request():
     """Handle CSV upload and analysis."""
     logger.info("Received CSV analysis request")

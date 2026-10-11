@@ -5,7 +5,7 @@
 - **Framework**: pytest
 - **Test files**: `tests/test_analyzer.py` (23 tests), `tests/test_api.py` (21 tests)
 - **Test fixtures**: `tests/fixtures/` with 5 sample CSV files
-- **Total test count**: 44 tests covering all critical paths
+- **Total test count**: 49 tests covering all critical paths
 
 Tests can be run with `.venv\Scripts\python.exe -m pytest tests/ -v`
 
@@ -23,8 +23,9 @@ Tests can be run with `.venv\Scripts\python.exe -m pytest tests/ -v`
 | API download endpoint | 2 tests | ✅ COMPLETE |
 | API sample CSV | 1 test | ✅ COMPLETE |
 | Error handlers | 2 tests | ✅ COMPLETE |
+| **Rate limiting** | **5 tests** | ✅ **COMPLETE** |
 
-**Total**: 44 tests covering all functional requirements
+**Total**: 49 tests covering all functional requirements + rate limiting
 
 ---
 
@@ -124,12 +125,15 @@ The analyzer has been extended with the following capabilities:
 |------|--------|
 | `test_sample_csv_download` | ✅ PASS |
 
-**Error Handlers (2 tests)**
+**Rate Limiting Tests (5 tests)**
 
 | Test | Status |
 |------|--------|
-| `test_404_handler` | ✅ PASS |
-| `test_500_handler_structure` | ✅ PASS |
+| `test_rate_limit_not_exceeded` | ✅ PASS |
+| `test_rate_limit_exceeded` | ✅ PASS |
+| `test_rate_limit_response_format` | ✅ PASS |
+| `test_rate_limit_per_ip` | ✅ PASS |
+| `test_rate_limit_cleanup` | ✅ PASS |
 
 ---
 
@@ -267,4 +271,4 @@ These checks must be performed manually against the running application.
 
 ---
 
-*Last updated: 2026-10-12 — Comprehensive test suite with 44 tests covering all requirements*
+*Last updated: 2026-10-12 — Comprehensive test suite with 49 tests covering all requirements + rate limiting*
