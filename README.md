@@ -41,11 +41,11 @@ zero-configuration analysis to surface these issues without modifying the origin
 
 | Layer | Technology |
 |---|---|
-| Backend | FastAPI (Python 3.11+) |
+| Backend | Flask (Python 3.11+) |
 | CSV processing | pandas |
 | Database | SQLite (file-based) |
 | Frontend | HTML, CSS, vanilla JavaScript |
-| Hosting | PythonAnywhere free tier |
+| Hosting | PythonAnywhere free Beginner tier |
 
 ---
 
@@ -54,11 +54,11 @@ zero-configuration analysis to surface these issues without modifying the origin
 ```
 Browser
   │
-  ├── GET /          → HTML form (served by FastAPI + Jinja2 templates)
+  ├── GET /          → HTML form (served by Flask + Jinja2 templates)
   │
   └── POST /api/analyze
         │
-        ├── Validate form fields (Pydantic)
+        ├── Validate form fields (manual validation)
         ├── Validate file (size, extension, parseable CSV)
         ├── Analyze CSV in memory (pandas) — file discarded after analysis
         ├── Write record to SQLite (request + analysis summary JSON)
@@ -80,9 +80,9 @@ Data flow:
 ```
 datacheck/
 ├── app/
-│   ├── main.py              # FastAPI application entry point
+│   ├── main.py              # Flask application entry point
 │   ├── analyzer.py          # CSV analysis logic
-│   ├── schemas.py           # Pydantic request/response models
+│   ├── forms.py             # WTForms or manual validation
 │   ├── models.py            # SQLAlchemy ORM models
 │   ├── database.py          # SQLite connection and session management
 │   ├── templates/

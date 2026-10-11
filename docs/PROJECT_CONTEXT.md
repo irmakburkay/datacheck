@@ -5,7 +5,7 @@
 ### Approved Decisions
 ✅ **Project**: DataCheck CSV Quality Analyzer for hiring assessment
 ✅ **Budget**: Zero-cost (free services only)
-✅ **Stack**: PythonAnywhere (free tier) + SQLite + FastAPI
+✅ **Stack**: PythonAnywhere (free tier) + SQLite + Flask
 ✅ **Scope**: Service request form + CSV analysis + JSON report + database persistence
 ✅ **Features**: Basic metrics only (rows, columns, missing values, duplicates, data types)
 ✅ **File Handling**: 5 MB upload limit (default), temporary processing, no file persistence
@@ -13,23 +13,20 @@
 ✅ **Documentation**: AGENTS.md, PROJECT_CONTEXT.md, AI_LOG.md, DECISIONS.md, TEST_PLAN.md, DEPLOYMENT.md, README.md all complete and consistent
 
 ### Unverified Assumptions
-⚠️ **PythonAnywhere ASGI Compatibility**: Beta feature — NOT TESTED
 ⚠️ **SQLite File Persistence**: Writable directory location on PythonAnywhere — NOT TESTED
 ⚠️ **Memory Limits**: 5 MB CSV processing on 512 MB RAM free tier — NOT TESTED
+⚠️ **Flask Deployment**: WSGI support confirmed, but full app deployment NOT TESTED
 
 ### Pending Decisions
-❓ **Fallback Framework**: If ASGI fails, switch to Flask? (requires explicit approval)
 ❓ **Database Location**: Exact writable path for SQLite file — determined during deployment test
 ❓ **Error Message Catalogue**: Specific user-facing messages — defined during implementation
 
 ### Next Exact Action
-Test PythonAnywhere ASGI compatibility manually with a minimal FastAPI health endpoint.
-Do not begin application implementation until this test passes (or fallback is approved).
+Deploy Flask app to PythonAnywhere and verify `/health` endpoint.
 
 ### ⚠️ WARNING
-**Implementation has NOT started.** Deployment compatibility is UNVERIFIED.
-The next step is testing PythonAnywhere ASGI support with a minimal FastAPI health endpoint.
-If ASGI fails, stop and present the Flask fallback for approval before proceeding.
+**Implementation has NOT started.** Deployment must be tested on PythonAnywhere.
+Flask is the approved backend framework (WSGI-compatible).
 
 ## Project Overview
 
@@ -121,11 +118,11 @@ This project serves as a technical assessment demonstrating:
 ## Technical Stack
 
 ### Confirmed Stack
-- **Backend Framework**: FastAPI (Python 3.11+)
+- **Backend Framework**: Flask (Python 3.11+)
 - **Database**: SQLite (file-based, zero-cost)
 - **CSV Processing**: pandas (with size limits)
 - **Frontend**: HTML, CSS, vanilla JavaScript
-- **Hosting**: PythonAnywhere free tier (if ASGI compatible)
+- **Hosting**: PythonAnywhere free Beginner tier (WSGI well-supported)
 
 ### Deployment Assumptions (UNVERIFIED)
 - **PythonAnywhere**: Free tier supports ASGI applications (beta feature)
@@ -484,14 +481,12 @@ Tests should verify actual behaviour. Coverage targets are not mandated, but tes
 
 ### Next Steps (Sequential)
 
-1. Test PythonAnywhere ASGI compatibility with minimal FastAPI health endpoint ← **CURRENT**
-2. If ASGI works: begin Phase 1 implementation (environment setup, project skeleton)
-3. If ASGI fails: present Flask fallback for explicit approval before proceeding
-4. Implement core logic (CSV analyzer, database layer, API endpoints)
-5. Implement frontend (form, results display, error handling)
-6. Write and run tests
-7. Deploy and verify live application
-8. Finalise documentation and README with live URL
+1. Deploy Flask app to PythonAnywhere and verify `/health` endpoint ← **CURRENT**
+2. Implement core logic (CSV analyzer, database layer, API endpoints)
+3. Implement frontend (form, results display, error handling)
+4. Write and run tests
+5. Deploy and verify live application
+6. Finalise documentation and README with live URL
 
 ---
 

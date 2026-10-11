@@ -32,52 +32,42 @@ file) is the only viable database option.
 
 ---
 
-## Mandatory first step: ASGI compatibility test
+## Mandatory first step: ASGI compatibility test — [UPDATE: ASGI not exposed in web UI]
 
 **Before writing any application code**, test that FastAPI deploys on the free tier.
 
-This test must be done manually in the PythonAnywhere web interface. It cannot be automated
-from a local machine.
+**[UPDATE 2026-10-11]**: PythonAnywhere's "Manual configuration" web interface creates a **WSGI configuration file** by default, not ASGI. The ASGI support may be available through API or SSH configuration, but it is not exposed in the standard web interface for adding new web apps.
 
-**[UNVERIFIED]** Steps:
+### Current situation:
+- PythonAnywhere's web interface for "Manual configuration" creates a WSGI file (at `/var/www/`)
+- FastAPI is ASGI-based and requires an ASGI server (uvicorn/hypercorn)
+- The WSGI file created by PythonAnywhere won't work with FastAPI directly
 
-1. Create a PythonAnywhere account (free Beginner tier)
-2. Open a Bash console
-3. Install fastapi and uvicorn in a virtual environment:
-   ```bash
-   mkvirtualenv datacheck --python=python3.11
-   pip install fastapi uvicorn
-   ```
-4. Create a minimal test app:
-   ```python
-   # /home/<username>/test_app/main.py
-   from fastapi import FastAPI
-   app = FastAPI()
+### Options:
 
-   @app.get("/health")
-   def health():
-       return {"status": "ok"}
-   ```
-5. Go to the Web tab → Add a new web app → Manual configuration → Python 3.11
-6. Configure the ASGI entry point (see PythonAnywhere ASGI beta documentation)
-7. Reload and test: `https://<username>.pythonanywhere.com/health`
+**Option A: Use Flask (WSGI-compatible) — Recommended**
+- Flask is WSGI-compatible and well-supported on PythonAnywhere
+- FastAPI features like Pydantic validation can be replaced with manual validation
+- All other logic (CSV analysis, SQLite, JSON response) remains the same
 
-**If this succeeds**: proceed with full implementation using FastAPI.  
-**If this fails**: stop. Do not proceed with FastAPI. Evaluate the fallback below.
+**Option B: Test ASGI via API or SSH (advanced)**
+- Use PythonAnywhere API to create ASGI configuration
+- Or SSH into PythonAnywhere and configure manually
+- Beyond the scope of standard web interface
 
 ---
 
 ## Fallback: Flask (WSGI)
 
-If FastAPI ASGI deployment fails on PythonAnywhere free tier, the fallback is Flask.
+**[UPDATE 2026-10-11]**: Given that ASGI is not exposed in PythonAnywhere's web interface,
+the recommended approach is to use Flask (WSGI) instead of FastAPI.
 
 Flask uses WSGI, which is stable and well-tested on PythonAnywhere. The trade-offs are:
 - Replace Pydantic request models with manual validation
 - Keep all other logic (CSV analysis, SQLite, JSON response) unchanged
 - Flask is less automatic about error responses but fully functional
 
-**This fallback requires explicit user approval before implementation switches to Flask.**
-Update ADR-003 in `DECISIONS.md` if the fallback is chosen.
+**Decision**: Use Flask instead of FastAPI. Update ADR-003 to reflect this change.
 
 ---
 
@@ -233,3 +223,72 @@ Complete these checks after every deployment. Do not mark as passed until actual
 
 *This document must be updated after each deployment attempt, whether successful or not.*
 *Mark steps as VERIFIED only after they have been successfully executed.*
+---
+
+## Flask deployment (recommended)
+
+**[VERIFIED: WSGI works on PythonAnywhere]** Use this approach instead of ASGI.
+
+### 1. Set up the repository
+
+In a PythonAnywhere Bash console:
+
+```bash
+git clone https://github.com/irmakburkay/datacheck.git datacheck
+cd datacheck
+```
+
+### 2. Create and activate virtual environment
+
+```bash
+mkvirtualenv datacheck --python=python3.11
+pip install flask pandas
+```
+
+### 3. Create the database directory
+
+```bash
+mkdir -p /home/<username>/data
+```
+
+### 4. Create a WSGI file
+
+PythonAnywhere requires a WSGI entry point. Create `/var/www/<username>_pythonanywhere_com_wsgi.py`:
+
+```python
+import sys
+import os
+
+# Add your project directory to the sys.path
+project_home = '/home/<username>/datacheck'
+if project_home not in sys.path:
+    sys.path.insert(0, project_home)
+
+from app.main import app as application
+```
+
+### 5. Configure the web app
+
+1. Go to the "Web" tab → "Add a new web app"
+2. Choose "Flask" from the framework list (this creates a proper WSGI config)
+3. Choose Python 3.11
+4. Or choose "Manual configuration" and specify the WSGI file path
+
+### 6. Configure virtual environment
+
+In the Web tab, set the virtualenv path:
+```
+/home/<username>/.virtualenvs/datacheck
+```
+
+### 7. Reload the web app
+
+Click "Reload" in the Web tab.
+
+### 8. Test
+
+Open `https://<username>.pythonanywhere.com/health` in your browser.
+
+---
+
+## Environment variables reference
