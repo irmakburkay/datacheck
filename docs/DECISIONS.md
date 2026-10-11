@@ -68,29 +68,30 @@ separate server, and persists across application reloads as a file.
 
 ---
 
-## ADR-003: Backend Framework — FastAPI
+## ADR-003: Backend Framework — Flask (WSGI)
 
-**Status**: Accepted — deployment UNVERIFIED  
-**Date**: 2026-10-11
+**Status**: Accepted — deployment planned  
+**Date**: 2026-10-11 (updated from FastAPI)
 
-**Decision**: Use FastAPI as the backend framework.
+**Decision**: Use Flask as the backend framework instead of FastAPI.
 
-**Context**: FastAPI provides automatic request validation via Pydantic, automatic OpenAPI
-documentation, and is the framework specified in the assessment requirements.
+**Context**: PythonAnywhere's "Manual configuration" web interface creates a WSGI configuration file by default, not ASGI. FastAPI is ASGI-based and requires an ASGI server (uvicorn or hypercorn). The WSGI interface that PythonAnywhere creates won't work directly with FastAPI.
 
 **Alternatives considered**:
 
 | Option | Notes |
 |---|---|
-| Flask | Well-supported on PythonAnywhere WSGI; confirmed fallback if FastAPI ASGI fails |
+| FastAPI | ASGI-based; ASGI not exposed in PythonAnywhere web interface — required fallback |
 | Django | Too heavy for this scope |
 
 **Consequences**:
-- FastAPI is ASGI-based; requires an ASGI server (uvicorn or hypercorn)
-- PythonAnywhere ASGI support is beta — must be verified before implementation
-- **Fallback**: If ASGI deployment fails, switch to Flask (WSGI); this would require
-  replacing Pydantic request models with manual validation but is otherwise low-risk
-- If fallback is triggered, this ADR must be updated to reflect the change
+- Flask is WSGI-compatible and well-supported on PythonAnywhere
+- Manual validation required for form fields (no Pydantic automatic validation)
+- All other logic (CSV analysis, SQLite, JSON response) remains unchanged
+- Flask is less automatic about error responses but fully functional
+- All other ADRs remain unchanged (database, CSV processing, upload limits, etc.)
+
+**Updated from**: This ADR was originally FastAPI. Updated to Flask on 2026-10-11 after ASGI compatibility test revealed the web interface only creates WSGI files.
 
 ---
 
