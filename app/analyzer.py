@@ -107,7 +107,7 @@ def _infer_data_type(series: pd.Series) -> str:
     
     # Try date
     try:
-        dates = pd.to_datetime(non_null, errors='coerce')
+        dates = pd.to_datetime(non_null, errors='coerce', format='mixed')
         if dates.notna().any():
             return 'date'
     except Exception:

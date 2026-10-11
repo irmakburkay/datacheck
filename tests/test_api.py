@@ -2,14 +2,21 @@
 
 from pathlib import Path
 import pytest
+import sys
+import os
+
+# Set required environment variables BEFORE importing app modules
+os.environ.setdefault('DATABASE_PATH', '/tmp/test_datacheck.db')
+os.environ.setdefault('MAX_UPLOAD_SIZE', '5242880')
+os.environ.setdefault('MAX_ROWS', '100000')
+os.environ.setdefault('MAX_COLUMNS', '100')
+os.environ.setdefault('LOG_LEVEL', 'WARNING')
 
 # Add parent directory to path to import app modules
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app.main import app
 import tempfile
-import os
 
 
 @pytest.fixture

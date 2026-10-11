@@ -82,19 +82,27 @@ Data flow:
 ```
 datacheck/
 ├── app/
-│   ├── main.py              # Flask application entry point
-│   ├── analyzer.py          # CSV analysis logic
-│   ├── forms.py             # WTForms or manual validation
-│   ├── models.py            # SQLAlchemy ORM models
-│   ├── database.py          # SQLite connection and session management
+│   ├── __init__.py          # Package marker
+│   ├── main.py              # Flask application entry point and routes
+│   ├── analyzer.py          # CSV analysis logic (pandas)
+│   ├── database.py          # SQLite connection, init, save, get
 │   ├── templates/
 │   │   └── index.html       # Service request form
 │   └── static/
-│       ├── styles.css
-│       └── app.js
+│       ├── css/
+│       │   └── styles.css
+│       └── js/
+│           └── app.js
 ├── tests/
-│   ├── test_analyzer.py
-│   └── test_api.py
+│   ├── __init__.py
+│   ├── test_analyzer.py     # Unit tests for CSV analyzer
+│   ├── test_api.py          # Integration tests for API endpoints
+│   └── fixtures/
+│       ├── valid_basic.csv
+│       ├── missing_values.csv
+│       ├── duplicates.csv
+│       ├── header_only.csv
+│       └── malformed.csv
 ├── docs/
 │   ├── PROJECT_CONTEXT.md
 │   ├── AI_LOG.md
@@ -165,10 +173,10 @@ at the path specified by `DATABASE_PATH` in your `.env` file.
 ### 6. Run the application
 
 ```bash
-uvicorn app.main:app --reload
+flask --app app.main run
 ```
 
-Open `http://localhost:8000` in your browser.
+Open `http://localhost:5000` in your browser.
 
 ---
 

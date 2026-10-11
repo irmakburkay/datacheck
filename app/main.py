@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from uuid import uuid4
 import os
+import json
 import tempfile
 import logging
 
@@ -101,7 +102,7 @@ def analyze_request():
             total_rows=result["total_rows"],
             total_columns=result["total_columns"],
             duplicate_rows=result["duplicate_rows"],
-            column_info=str(column_info)  # Will be JSON in full implementation
+            column_info=json.dumps(column_info)
         )
         
         if not saved:
@@ -141,7 +142,6 @@ def download_report(request_id):
     column_info = request_data["column_info"]
     if isinstance(column_info, str):
         try:
-            import json
             column_info = json.loads(column_info)
         except Exception:
             column_info = []
@@ -160,6 +160,13 @@ def download_report(request_id):
         "column_analysis": column_info,
         "created_at": str(request_data["created_at"])
     }
-    
-    return jsonify(report)
+
+    filename = f"datacheck-report-{request_id[:8]}.json"
+    response = app.response_class(
+        response=json.dumps(report, indent=2),
+        status=200,
+        mimetype="application/json"
+    )
+    response.headers["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return response
 
