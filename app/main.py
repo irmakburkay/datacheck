@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request
 from uuid import uuid4
 import os
 import tempfile
+import logging
 
 from app.database import init_db, get_request, save_request
 from app.analyzer import analyze
@@ -10,6 +11,13 @@ app = Flask(__name__)
 
 # Initialize database on startup
 init_db()
+
+# Configure logging
+logging.basicConfig(
+    level=os.getenv('LOG_LEVEL', 'INFO'),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 @app.route("/health")
 def health():
@@ -23,6 +31,8 @@ def index():
 @app.route("/api/analyze", methods=["POST"])
 def analyze_request():
     """Handle CSV upload and analysis."""
+    logger.info("Received CSV analysis request")
+    
     # Extract form fields
     name = request.form.get("name", "").strip()
     email = request.form.get("email", "").strip()
@@ -31,26 +41,33 @@ def analyze_request():
     
     # Validate required fields
     if not name:
+        logger.warning("Analysis request failed: missing name")
         return jsonify({"error": "Name is required"}), 400
     if not email:
+        logger.warning("Analysis request failed: missing email")
         return jsonify({"error": "Email is required"}), 400
     if not service:
+        logger.warning("Analysis request failed: missing service selection")
         return jsonify({"error": "Service selection is required"}), 400
     
     # Validate email format (basic check)
     if "@" not in email or "." not in email:
+        logger.warning("Analysis request failed: invalid email format")
         return jsonify({"error": "Invalid email format"}), 400
     
     # Check for file upload
     if "csv_file" not in request.files:
+        logger.warning("Analysis request failed: no file uploaded")
         return jsonify({"error": "CSV file is required"}), 400
     
     file = request.files["csv_file"]
     if file.filename == "":
+        logger.warning("Analysis request failed: empty filename")
         return jsonify({"error": "No file selected"}), 400
     
     # Validate file extension
     if not file.filename.lower().endswith(".csv"):
+        logger.warning(f"Analysis request failed: invalid file type - {file.filename}")
         return jsonify({"error": "Only CSV files are accepted"}), 400
     
     # Save file temporarily and analyze
@@ -61,8 +78,14 @@ def analyze_request():
     try:
         file_size = os.path.getsize(temp_path)
         
+        logger.info(f"Analyzing CSV: {file.filename}, size: {file_size} bytes")
+        
         # Run analysis
-        result = analyze(temp_path, file_size=file_size)
+        try:
+            result = analyze(temp_path, file_size=file_size)
+        except ValueError as e:
+            logger.warning(f"Analysis request failed: {str(e)}")
+            return jsonify({"error": str(e)}), 400
         
         # Save to database
         request_id = str(uuid4())
@@ -82,7 +105,10 @@ def analyze_request():
         )
         
         if not saved:
+            logger.error(f"Analysis request {request_id} failed: database save error")
             return jsonify({"error": "Failed to save request"}), 500
+        
+        logger.info(f"Analysis request {request_id} completed successfully")
         
         return jsonify({
             "request_id": request_id,
@@ -100,6 +126,7 @@ def analyze_request():
         # Clean up temp file
         if os.path.exists(temp_path):
             os.remove(temp_path)
+            logger.debug(f"Temporary file cleaned up: {temp_path}")
 
 
 @app.route("/api/download/<request_id>")

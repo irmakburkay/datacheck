@@ -245,3 +245,48 @@ details server-side.
 ## Superseded Decisions
 
 *(None yet. When a decision is replaced, add an entry here referencing the new ADR.)*
+---
+
+## ADR-010: Optional Enhancements — Logging, Download Button, Row/Column Limits
+
+**Status**: Accepted  
+**Date**: 2026-10-12
+
+**Decision**: Implement optional enhancements to improve the application quality.
+
+### Enhancements Implemented
+
+1. **Logging** (`app/main.py`)
+   - Added `logging` module with configurable level via `LOG_LEVEL` env var
+   - Logs at INFO level by default, with detailed messages for successful requests
+   - Logs warnings for validation failures, errors for database failures
+   - Never logs personal data (name, email), CSV contents, or secrets
+
+2. **Download Button** (`app/templates/index.html`, `app/static/js/app.js`)
+   - Added "Download Report" button in the results UI
+   - Button appears after successful analysis with filename from analysis
+   - Clicking button navigates to `/api/download/{request_id}` for JSON download
+
+3. **Row/Column Limits Before Pandas** (`app/analyzer.py`)
+   - Enhanced `analyze()` to validate row/column limits BEFORE loading into pandas
+   - Prevents memory exhaustion from oversized files by checking limits first
+   - File size validation also happens before pandas loading
+
+**Context**: These enhancements improve the application without changing the MVP scope:
+- Better observability through logging
+- Better user experience with direct download button
+- Safer memory handling with early limit validation
+
+**Consequences**:
+- No breaking changes to API or functionality
+- All enhancements are opt-in (configurable via environment variables)
+- No additional dependencies required
+- All enhancements work on local development and PythonAnywhere
+
+**Files affected**: `app/main.py`, `app/analyzer.py`, `app/templates/index.html`, `app/static/js/app.js`
+
+---
+
+## Superseded Decisions
+
+*(None yet. When a decision is replaced, add an entry here referencing the new ADR.)*

@@ -298,3 +298,133 @@ Open `https://<username>.pythonanywhere.com/health` in your browser.
 ---
 
 ## Environment variables reference
+
+## Flask deployment (recommended)
+
+**[VERIFIED: WSGI works on PythonAnywhere]** Use this approach instead of ASGI.
+
+### 1. Set up the repository
+
+In a PythonAnywhere Bash console:
+
+```bash
+git clone https://github.com/irmakburkay/datacheck.git datacheck
+cd datacheck
+```
+
+### 2. Create and activate virtual environment
+
+```bash
+mkvirtualenv datacheck --python=python3.11
+pip install flask pandas python-dotenv
+```
+
+### 3. Create the database directory
+
+```bash
+mkdir -p /home/<username>/data
+```
+
+### 4. Create a WSGI file
+
+PythonAnywhere requires a WSGI entry point. Create `/var/www/<username>_pythonanywhere_com_wsgi.py`:
+
+```python
+import sys
+
+# Add your project directory to the sys.path
+path = '/home/<username>/datacheck'
+if path not in sys.path:
+    sys.path.insert(0, path)
+
+from app.main import app as application
+```
+
+**Important**: Add project root (not `app/` subdirectory) to `sys.path` to enable `from app.main import app`.
+
+### 5. Configure the web app
+
+1. Go to the "Web" tab → "Add a new web app"
+2. Choose "Flask" from the framework list (this creates a proper WSGI config)
+3. Choose Python 3.11
+4. Or choose "Manual configuration" and specify the WSGI file path
+
+### 6. Configure virtual environment
+
+In the Web tab, set the virtualenv path:
+```
+/home/<username>/.virtualenvs/datacheck
+```
+
+### 7. Reload the web app
+
+Click "Reload" in the Web tab.
+
+### 8. Test
+
+Open `https://<username>.pythonanywhere.com/health` in your browser.
+
+---
+
+## Environment variables reference
+
+---
+
+## Deployment fix: Import errors on PythonAnywhere (2026-10-11)
+
+### Issue
+Flask app failed to deploy with multiple import errors:
+- `ImportError: attempted relative import with no known parent package`
+- `ModuleNotFoundError: No module named 'app'`
+- `TypeError: expected str, bytes or os.PathLike object, not NoneType` (DATABASE_PATH)
+
+### Root causes
+1. Relative imports (`from .database import ...`) don't work when PythonAnywhere WSGI imports `main` directly
+2. WSGI path configuration added `app/` subdirectory instead of project root
+3. `load_dotenv()` couldn't find `.env` file due to different working directory
+
+### Fixes applied
+
+#### `app/main.py`
+Changed relative imports to absolute:
+```python
+# Before
+from .database import init_db, get_request, save_request
+
+# After
+from app.database import init_db, get_request, save_request
+```
+
+#### `app/database.py` and `app/analyzer.py`
+Explicitly load `.env` from project root:
+```python
+from dotenv import load_dotenv
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+env_path = project_root / ".env"
+load_dotenv(env_path)
+```
+
+#### WSGI file (`/var/www/<username>_pythonanywhere_com_wsgi.py`)
+Add project root to `sys.path` (not `app/` subdirectory):
+```python
+import sys
+
+path = '/home/irmakburkay/datacheck'  # Project root, not app/
+if path not in sys.path:
+    sys.path.insert(0, path)
+
+from app.main import app as application
+```
+
+### Result
+Flask app now loads successfully on PythonAnywhere with:
+- `/health` returning `{"status": "ok"}`
+- Database initialization working
+- All environment variables loaded from `/home/irmakburkay/datacheck/.env`
+
+---
+
+*This document must be updated after each deployment attempt, whether successful or not.*
+*Mark steps as VERIFIED only after they have been successfully executed.*

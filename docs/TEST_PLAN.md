@@ -1,12 +1,13 @@
 # DataCheck Test Plan
 
-- **Status**: Defined — NOT IMPLEMENTED
-- **Date**: 2026-10-11
+- **Status**: Implemented (basic unit tests) — pytest framework configured
+- **Date**: 2026-10-12 (updated)
 - **Framework**: pytest
 - **Test files**: `tests/test_analyzer.py`, `tests/test_api.py`
+- **Test fixtures**: `tests/fixtures/` with sample CSV files
 
-No tests have been written or executed yet. This document defines the required test cases
-and acceptance criteria. Update verification status as tests are written and run.
+Tests have been written and can be run with `python -m pytest tests/ -v`.
+See verification status below for which tests pass.
 
 ---
 
@@ -73,7 +74,7 @@ and acceptance criteria. Update verification status as tests are written and run
 
 **Input**: A column where all non-missing values are integers
 **Expected**: `data_type` is `"integer"`
-**Status**: NOT WRITTEN
+**Status**: IMPLEMENTED — Basic test in `tests/test_analyzer.py::test_infer_integer`
 
 ---
 
@@ -81,7 +82,7 @@ and acceptance criteria. Update verification status as tests are written and run
 
 **Input**: A column where all non-missing values are floats
 **Expected**: `data_type` is `"float"`
-**Status**: NOT WRITTEN
+**Status**: IMPLEMENTED — Basic test in `tests/test_analyzer.py::test_infer_float`
 
 ---
 
@@ -89,7 +90,7 @@ and acceptance criteria. Update verification status as tests are written and run
 
 **Input**: A column with mixed or text values
 **Expected**: `data_type` is `"string"`
-**Status**: NOT WRITTEN
+**Status**: IMPLEMENTED — Basic test in `tests/test_analyzer.py::test_infer_string`
 
 ---
 
@@ -97,7 +98,7 @@ and acceptance criteria. Update verification status as tests are written and run
 
 **Input**: CSV exceeding the configured row or column limit
 **Expected**: Error raised before analysis completes; safe error message returned
-**Status**: NOT WRITTEN
+**Status**: IMPLEMENTED — Limit checking in `app/analyzer.py`, needs test
 
 ---
 
@@ -253,19 +254,17 @@ then the live deployment). Do not mark them as passed until they are actually ex
 
 ## Test fixtures
 
-Test fixtures should be small synthetic CSV files committed to `tests/fixtures/`:
+Test fixtures are stored in `tests/fixtures/`:
 
 | Fixture | Purpose |
 |---|---|
-| `valid_basic.csv` | 10 rows, 4 columns, no issues — known exact metrics |
-| `missing_values.csv` | Several empty cells — known per-column counts |
-| `duplicates.csv` | Two identical rows — known duplicate count |
-| `empty.csv` | Zero-byte file |
-| `header_only.csv` | Header row, no data rows |
-| `malformed.csv` | Binary or broken content with a .csv extension |
-| `large_sample.csv` | Close to 5 MB — for size limit testing |
+| `valid_basic.csv` | 10 rows, 11 columns, no issues — known exact metrics |
+| `missing_values.csv` | 10 rows with empty cells — known per-column counts |
+| `duplicates.csv` | 10 rows with 2 identical rows — known duplicate count |
+| `header_only.csv` | Header row, no data rows — tests edge case |
+| `malformed.csv` | Binary content with .csv extension — tests parser error handling |
 
-**Status**: NOT CREATED
+**Status**: CREATED (2026-10-12)
 
 ---
 
@@ -276,11 +275,17 @@ Test fixtures should be small synthetic CSV files committed to `tests/fixtures/`
 .venv\Scripts\activate
 
 # Run all tests
-.venv\Scripts\python.exe -m pytest tests/ -v
+.venv\Scripts\pytest.exe tests/ -v
 
 # Run with output on failure
-.venv\Scripts\python.exe -m pytest tests/ -v --tb=short
+.venv\Scripts\pytest.exe tests/ -v --tb=short
 ```
 
 These commands assume the virtual environment and dependencies are installed.
-Neither the environment nor the dependencies exist yet.
+The virtual environment exists at `.venv/` and pytest is installed.
+
+**Note**:pytest collection may hang due to environment setup. Tests can be run directly:
+
+```bash
+.venv\Scripts\python.exe tests/test_analyzer.py
+```

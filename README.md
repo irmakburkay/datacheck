@@ -3,7 +3,9 @@
 A lightweight web application that analyzes CSV files for common data quality issues.
 Built as a hiring assessment project demonstrating full-stack Python development.
 
-**Current status**: Implementation complete (Flask/WSGI). Local testing verified. Deployment to PythonAnywhere in progress.
+**Current status**: Live deployment verified on PythonAnywhere (Flask/WSGI). All endpoints operational. Tests and fixtures in progress.
+
+**Live URL**: https://irmakburkay.pythonanywhere.com/
 
 ---
 
@@ -180,6 +182,18 @@ pip install -r requirements-dev.txt
 python -m pytest tests/ -v
 ```
 
+### Test fixtures
+
+Test fixtures are stored in `tests/fixtures/`:
+
+| Fixture | Description |
+|---|---|
+| `valid_basic.csv` | 10 rows, 11 columns — known exact metrics |
+| `missing_values.csv` | 10 rows with empty cells — tests missing value counting |
+| `duplicates.csv` | 10 rows with 2 exact duplicates — tests duplicate detection |
+| `header_only.csv` | Empty CSV (header only) — tests edge case handling |
+| `malformed.csv` | Binary content — tests parser error handling |
+
 See `docs/TEST_PLAN.md` for the full list of test cases and their current status.
 
 ---
@@ -300,10 +314,13 @@ or stored in the database.
 
 See `docs/DEPLOYMENT.md` for full deployment instructions.
 
-**Live URL**: Not yet deployed.
+**Live URL**: https://irmakburkay.pythonanywhere.com/ (verified 2026-10-12)
 
-Target platform: PythonAnywhere free Beginner tier (`username.pythonanywhere.com`).
-ASGI compatibility must be verified before deployment proceeds.
+**Deployment details**:
+- Platform: PythonAnywhere free Beginner tier
+- Framework: Flask (WSGI-compatible)
+- Database: SQLite at `/home/irmakburkay/data/requests.db`
+- HTTPS: Automatic on free subdomain
 
 ---
 

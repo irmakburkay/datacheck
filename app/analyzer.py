@@ -26,12 +26,13 @@ def analyze(file_path: str, file_size: int | None = None) -> dict:
     Raises:
         ValueError: If file violates limits or is invalid
     """
-    # Validate file size
+    # Validate file size before reading
     if file_size is not None and file_size > MAX_UPLOAD_SIZE:
-        raise ValueError(f"File size exceeds limit of {MAX_UPLOAD_SIZE} bytes")
+        raise ValueError(f"File size ({file_size} bytes) exceeds limit of {MAX_UPLOAD_SIZE} bytes")
     
     try:
-        df = pd.read_csv(file_path)
+        # Read CSV with limits to prevent memory issues
+        df = pd.read_csv(file_path, nrows=MAX_ROWS + 1)
     except Exception as e:
         raise ValueError(f"Invalid CSV file: {e}")
     
