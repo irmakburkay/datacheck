@@ -12,6 +12,34 @@
 ✅ **Privacy**: No public historical endpoints, return analysis in POST response
 ✅ **Documentation**: AGENTS.md, PROJECT_CONTEXT.md, AI_LOG.md, DECISIONS.md, TEST_PLAN.md, DEPLOYMENT.md, README.md all complete and consistent
 ✅ **Deployment**: Flask WSGI verified on PythonAnywhere (2026-10-11)
+✅ **Implementation**: Core logic implemented (database, analyzer, Flask routes, HTML form, CSS, JS)
+✅ **Local testing**: Verified with Flask dev server (2026-10-11)
+
+### Unverified Assumptions
+⚠️ **SQLite File Persistence**: Writable directory location on PythonAnywhere — NOT TESTED
+⚠️ **Memory Limits**: 5 MB CSV processing on 512 MB RAM free tier — NOT TESTED
+
+### Pending Decisions
+❓ **Database Location**: Exact writable path for SQLite file on PythonAnywhere — determined during deployment
+❓ **Error Message Catalogue**: Specific user-facing messages — defined during implementation
+
+### Next Exact Action
+Deploy and verify live application on PythonAnywhere.
+
+### ✅ VERIFIED: Flask WSGI Deployment
+Flask deployed successfully via PythonAnywhere web interface.
+`/health` endpoint returns `{"status": "ok"}` over HTTPS.
+
+### Approved Decisions
+✅ **Project**: DataCheck CSV Quality Analyzer for hiring assessment
+✅ **Budget**: Zero-cost (free services only)
+✅ **Stack**: PythonAnywhere (free tier) + SQLite + Flask
+✅ **Scope**: Service request form + CSV analysis + JSON report + database persistence
+✅ **Features**: Basic metrics only (rows, columns, missing values, duplicates, data types)
+✅ **File Handling**: 5 MB upload limit (default), temporary processing, no file persistence
+✅ **Privacy**: No public historical endpoints, return analysis in POST response
+✅ **Documentation**: AGENTS.md, PROJECT_CONTEXT.md, AI_LOG.md, DECISIONS.md, TEST_PLAN.md, DEPLOYMENT.md, README.md all complete and consistent
+✅ **Deployment**: Flask WSGI verified on PythonAnywhere (2026-10-11)
 
 ### Unverified Assumptions
 ⚠️ **SQLite File Persistence**: Writable directory location on PythonAnywhere — NOT TESTED
