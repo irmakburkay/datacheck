@@ -40,6 +40,9 @@ def analyze(file_path: str, file_size: int | None = None) -> dict:
     total_rows = len(df)
     total_columns = len(df.columns)
     
+    if total_rows == 0:
+        raise ValueError("CSV file is empty (no data rows)")
+    
     if total_rows > MAX_ROWS:
         raise ValueError(f"Row count ({total_rows}) exceeds limit of {MAX_ROWS}")
     if total_columns > MAX_COLUMNS:
@@ -51,7 +54,8 @@ def analyze(file_path: str, file_size: int | None = None) -> dict:
     # Analyze each column
     column_analysis = []
     for column in df.columns:
-        series = df[column].astype(str).str.strip()
+        original_series = df[column]
+        series = original_series.astype(str).str.strip()
         
         # Data type detection
         data_type = _infer_data_type(series)
@@ -61,12 +65,39 @@ def analyze(file_path: str, file_size: int | None = None) -> dict:
         missing_count = missing_mask.sum()
         missing_percentage = (missing_count / total_rows * 100) if total_rows > 0 else 0.0
         
-        column_analysis.append({
+        # Unique value count
+        non_missing_series = series[~missing_mask]
+        unique_count = non_missing_series.nunique()
+        
+        # Build column analysis
+        col_info = {
             'name': column,
             'data_type': data_type,
             'missing_count': int(missing_count),
-            'missing_percentage': round(missing_percentage, 2)
-        })
+            'missing_percentage': round(missing_percentage, 2),
+            'unique_count': int(unique_count)
+        }
+        
+        # Add type-specific metrics
+        if data_type in ['integer', 'float'] and len(non_missing_series) > 0:
+            numeric_values = pd.to_numeric(non_missing_series, errors='coerce').dropna()
+            if len(numeric_values) > 0:
+                col_info['stats'] = {
+                    'min': round(float(numeric_values.min()), 2),
+                    'max': round(float(numeric_values.max()), 2),
+                    'mean': round(float(numeric_values.mean()), 2),
+                    'median': round(float(numeric_values.median()), 2)
+                }
+        
+        elif data_type == 'date' and len(non_missing_series) > 0:
+            date_values = pd.to_datetime(non_missing_series, errors='coerce', format='mixed').dropna()
+            if len(date_values) > 0:
+                col_info['date_range'] = {
+                    'earliest': str(date_values.min().date()),
+                    'latest': str(date_values.max().date())
+                }
+        
+        column_analysis.append(col_info)
     
     return {
         'total_rows': total_rows,

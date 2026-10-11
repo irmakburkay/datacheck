@@ -723,3 +723,21 @@ textarea { resize: vertical; min-height: 80px; }
     transition: color var(--t);
 }
 .sample-link:hover { color: var(--accent-dk); text-decoration: underline; }
+
+/* ── Column Detail Stats ───────────────────────── */
+.col-detail {
+    background: var(--bg);
+}
+.col-detail td {
+    padding: 8px 16px !important;
+}
+.col-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-mid);
+    font-family: var(--mono);
+}
+.col-stats span {
+    display: inline-block;
+}

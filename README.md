@@ -252,7 +252,25 @@ See `.env.example` for the complete list. Key variables:
         "name": "user_id",
         "data_type": "integer",
         "missing_count": 0,
-        "missing_percentage": 0.0
+        "missing_percentage": 0.0,
+        "unique_count": 1000,
+        "stats": {
+          "min": 1.0,
+          "max": 1000.0,
+          "mean": 500.5,
+          "median": 500.5
+        }
+      },
+      {
+        "name": "signup_date",
+        "data_type": "date",
+        "missing_count": 5,
+        "missing_percentage": 0.5,
+        "unique_count": 300,
+        "date_range": {
+          "earliest": "2024-01-01",
+          "latest": "2024-12-31"
+        }
       }
     ]
   },
@@ -280,10 +298,14 @@ See `.env.example` for the complete list. Key variables:
 | Duplicate rows | Rows where every column value is identical to another row |
 | Missing count | Empty strings and null values per column |
 | Missing percentage | `missing_count / total_rows × 100` |
+| Unique count | Number of distinct non-missing values in a column |
 | Data type | Inferred per column: integer, float, date, boolean, or string |
+| **Statistical metrics** (numeric columns) | `min`, `max`, `mean`, `median` |
+| **Date range** (date columns) | `earliest` and `latest` dates |
 
 Data type detection is best-effort. String is the fallback for columns that do not
-match a more specific type.
+match a more specific type. Statistical metrics and date ranges are only included
+for columns where they apply.
 
 ---
 

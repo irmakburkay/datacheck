@@ -161,10 +161,38 @@ document.addEventListener('DOMContentLoaded', function () {
             tr.innerHTML = `
                 <td>${escHtml(col.name)}</td>
                 <td><span class="badge ${typeClass}">${escHtml(col.data_type)}</span></td>
+                <td>${(col.unique_count || 0).toLocaleString()}</td>
                 <td>${col.missing_count.toLocaleString()}</td>
                 <td class="${pctClass}">${pct.toFixed(1)}%</td>
             `;
             tbody.appendChild(tr);
+            
+            // Add stats row if available
+            if (col.stats || col.date_range) {
+                const detailTr = document.createElement('tr');
+                detailTr.className = 'col-detail';
+                let detailHtml = '<td colspan="5"><div class="col-stats">';
+                
+                if (col.stats) {
+                    detailHtml += `
+                        <span>Min: ${col.stats.min}</span>
+                        <span>Max: ${col.stats.max}</span>
+                        <span>Mean: ${col.stats.mean}</span>
+                        <span>Median: ${col.stats.median}</span>
+                    `;
+                }
+                
+                if (col.date_range) {
+                    detailHtml += `
+                        <span>Earliest: ${col.date_range.earliest}</span>
+                        <span>Latest: ${col.date_range.latest}</span>
+                    `;
+                }
+                
+                detailHtml += '</div></td>';
+                detailTr.innerHTML = detailHtml;
+                tbody.appendChild(detailTr);
+            }
         });
 
         document.getElementById('downloadBtn').onclick = () => {
