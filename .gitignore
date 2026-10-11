@@ -218,3 +218,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# DataCheck specific
+.env
+data/
+*.db
+*.sqlite
+*.sqlite3
+uploads/
+kiro-session-*.zip
+AGENTS.md
