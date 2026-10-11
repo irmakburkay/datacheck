@@ -1,12 +1,17 @@
 from dotenv import load_dotenv
-load_dotenv()
-
 import os
 import sqlite3
 from pathlib import Path
 
+# Load .env from project root explicitly (find parent of app/ directory)
+project_root = Path(__file__).parent.parent
+env_path = project_root / ".env"
+load_dotenv(env_path)
+
 DATABASE_PATH = os.getenv("DATABASE_PATH")
 
+if not DATABASE_PATH:
+    raise RuntimeError("DATABASE_PATH environment variable is not set")
 
 def _get_connection():
     """Return a database connection with row factory for dict-like access."""

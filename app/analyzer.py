@@ -1,8 +1,12 @@
 from dotenv import load_dotenv
-load_dotenv()
-
 import os
 import pandas as pd
+from pathlib import Path
+
+# Load .env from project root explicitly (find parent of app/ directory)
+project_root = Path(__file__).parent.parent
+env_path = project_root / ".env"
+load_dotenv(env_path)
 
 MAX_UPLOAD_SIZE = int(os.getenv('MAX_UPLOAD_SIZE', 5242880))
 MAX_ROWS = int(os.getenv('MAX_ROWS', 100000))

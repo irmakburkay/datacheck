@@ -3,8 +3,8 @@ from uuid import uuid4
 import os
 import tempfile
 
-from .database import init_db, get_request, save_request
-from .analyzer import analyze
+from app.database import init_db, get_request, save_request
+from app.analyzer import analyze
 
 app = Flask(__name__)
 
