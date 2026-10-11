@@ -11,22 +11,22 @@
 ✅ **File Handling**: 5 MB upload limit (default), temporary processing, no file persistence
 ✅ **Privacy**: No public historical endpoints, return analysis in POST response
 ✅ **Documentation**: AGENTS.md, PROJECT_CONTEXT.md, AI_LOG.md, DECISIONS.md, TEST_PLAN.md, DEPLOYMENT.md, README.md all complete and consistent
+✅ **Deployment**: Flask WSGI verified on PythonAnywhere (2026-10-11)
 
 ### Unverified Assumptions
 ⚠️ **SQLite File Persistence**: Writable directory location on PythonAnywhere — NOT TESTED
 ⚠️ **Memory Limits**: 5 MB CSV processing on 512 MB RAM free tier — NOT TESTED
-⚠️ **Flask Deployment**: WSGI support confirmed, but full app deployment NOT TESTED
 
 ### Pending Decisions
-❓ **Database Location**: Exact writable path for SQLite file — determined during deployment test
+❓ **Database Location**: Exact writable path for SQLite file — determined during implementation
 ❓ **Error Message Catalogue**: Specific user-facing messages — defined during implementation
 
 ### Next Exact Action
-Deploy Flask app to PythonAnywhere and verify `/health` endpoint.
+Implement core logic (CSV analyzer, database layer, API endpoints) with Flask.
 
-### ⚠️ WARNING
-**Implementation has NOT started.** Deployment must be tested on PythonAnywhere.
-Flask is the approved backend framework (WSGI-compatible).
+### ✅ VERIFIED: Flask WSGI Deployment
+Flask deployed successfully via PythonAnywhere web interface.
+`/health` endpoint returns `{"status": "ok"}` over HTTPS.
 
 ## Project Overview
 

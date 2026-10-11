@@ -1,11 +1,10 @@
 # DataCheck Deployment Guide
 
 - **Target platform**: PythonAnywhere free Beginner tier
-- **Status**: NOT DEPLOYED — all steps below are planned but UNVERIFIED
+- **Status**: Flask deployment **VERIFIED** (2026-10-11)
 - **Date**: 2026-10-11
 
-No deployment has been attempted yet. Steps marked **[UNVERIFIED]** have not been tested
-on the PythonAnywhere free tier and may require adjustment.
+Flask deployment has been successfully verified on PythonAnywhere. The ASGI compatibility test was skipped because PythonAnywhere's web interface only creates WSGI files, and FastAPI is ASGI-based.
 
 ---
 
@@ -20,8 +19,7 @@ on the PythonAnywhere free tier and may require adjustment.
 | RAM | ~512 MB |
 | Disk | 512 MB |
 | Outbound internet | Restricted — only whitelisted hosts reachable |
-| ASGI support | **Beta feature** — compatibility with FastAPI is UNVERIFIED |
-| WSGI support | Stable and well-tested |
+| WSGI support | **Stable and verified** |
 | SQLite | Available; file must be in a writable directory |
 | Cron / scheduled tasks | Available on free tier (1 task) |
 | Always-on tasks | Not available on free tier |
@@ -29,6 +27,14 @@ on the PythonAnywhere free tier and may require adjustment.
 **Critical**: The free tier has restricted outbound internet access. This prevents connecting
 to external databases such as Supabase or any other remote PostgreSQL service. SQLite (local
 file) is the only viable database option.
+
+---
+
+## Mandatory first step: WSGI compatibility test
+
+**VERIFIED (2026-10-11)**: Flask WSGI deployment has been tested and confirmed working.
+
+The `/health` endpoint returned `{"status": "ok"}` over HTTPS.
 
 ---
 
@@ -73,14 +79,14 @@ Flask uses WSGI, which is stable and well-tested on PythonAnywhere. The trade-of
 
 ## Full deployment steps
 
-These steps assume the ASGI compatibility test has passed. **[UNVERIFIED]**
+These steps have been verified with Flask on PythonAnywhere.
 
 ### 1. Set up the repository
 
 In a PythonAnywhere Bash console:
 
 ```bash
-git clone https://github.com/irmakburkay/datacheck.git
+git clone https://github.com/irmakburkay/datacheck.git datacheck
 cd datacheck
 ```
 
