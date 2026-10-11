@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Page not found · DataCheck</title>
+    <meta name="description" content="This page doesn't exist.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232563eb'/><path d='M9 10h9l5 5v7a2 2 0 01-2 2H9a2 2 0 01-2-2V12a2 2 0 012-2z' fill='white' opacity='.9'/><path d='M18 10v6h5' stroke='%232563eb' stroke-width='1.5' fill='none' stroke-linejoin='round'/><path d='M11 18h10M11 21h7' stroke='%232563eb' stroke-width='1.5' stroke-linecap='round'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/error.css">
+</head>
+<body class="error-page">
+
+    <nav class="nav">
+        <div class="container nav-inner">
+            <a href="/" class="nav-logo">DataCheck</a>
+        </div>
+    </nav>
+
+    <main class="error-main">
+        <div class="error-inner">
+
+            <!-- Illustration: a CSV file wandering off the edge -->
+            <div class="error-illustration" aria-hidden="true">
+                <svg viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Ground line -->
+                    <line x1="20" y1="210" x2="300" y2="210" stroke="#e5e7eb" stroke-width="2" stroke-linecap="round"/>
+
+                    <!-- Cliff edge -->
+                    <path d="M20 210 L180 210 L180 215" stroke="#d1d5db" stroke-width="2" stroke-linecap="round"/>
+                    <!-- Falling rocks -->
+                    <circle cx="195" cy="218" r="3" fill="#e5e7eb"/>
+                    <circle cx="205" cy="225" r="2" fill="#e5e7eb"/>
+                    <circle cx="188" cy="228" r="1.5" fill="#e5e7eb"/>
+
+                    <!-- File document body -->
+                    <g transform="translate(190, 80) rotate(18)">
+                        <rect x="0" y="0" width="60" height="76" rx="5" fill="white" stroke="#d1d5db" stroke-width="1.5"/>
+                        <!-- Folded corner -->
+                        <path d="M44 0 L60 16 L44 16 Z" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1.5" stroke-linejoin="round"/>
+                        <!-- Lines -->
+                        <line x1="10" y1="28" x2="50" y2="28" stroke="#e5e7eb" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="10" y1="38" x2="50" y2="38" stroke="#e5e7eb" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="10" y1="48" x2="36" y2="48" stroke="#e5e7eb" stroke-width="2" stroke-linecap="round"/>
+                        <!-- .csv label -->
+                        <rect x="8" y="58" width="30" height="11" rx="3" fill="#eff6ff"/>
+                        <text x="23" y="67" font-family="monospace" font-size="7" fill="#2563eb" text-anchor="middle">.csv</text>
+                    </g>
+
+                    <!-- Exclamation cloud / thought bubble -->
+                    <g transform="translate(80, 60)">
+                        <ellipse cx="50" cy="30" rx="46" ry="28" fill="white" stroke="#e5e7eb" stroke-width="1.5"/>
+                        <!-- Tail dots -->
+                        <circle cx="82" cy="58" r="5" fill="white" stroke="#e5e7eb" stroke-width="1.5"/>
+                        <circle cx="93" cy="68" r="3" fill="white" stroke="#e5e7eb" stroke-width="1.5"/>
+                        <!-- Question mark -->
+                        <text x="50" y="38" font-family="Inter, sans-serif" font-size="24" font-weight="700"
+                              fill="#9ca3af" text-anchor="middle">?</text>
+                    </g>
+
+                    <!-- 404 text, large, faint -->
+                    <text x="160" y="175" font-family="Inter, sans-serif" font-size="64" font-weight="800"
+                          fill="#f3f4f6" text-anchor="middle" letter-spacing="-2">404</text>
+                </svg>
+            </div>
+
+            <div class="error-code">404</div>
+            <h1 class="error-title">This page doesn't exist.</h1>
+            <p class="error-desc">
+                The URL you followed doesn't point to anything here.
+                Maybe it was a stale link, a typo, or the page moved.
+            </p>
+            <div class="error-actions">
+                <a href="/" class="btn btn-primary">Back to DataCheck</a>
+                <a href="/#analyze" class="btn btn-secondary">Analyze a file</a>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

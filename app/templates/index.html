@@ -3,50 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataCheck CSV Analyzer</title>
+    <title>DataCheck — CSV Quality Analyzer</title>
+    <meta name="description" content="Upload a CSV file and get an instant quality report — missing values, duplicate rows, column types, and more. No account required.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232563eb'/><path d='M9 10h9l5 5v7a2 2 0 01-2 2H9a2 2 0 01-2-2V12a2 2 0 012-2z' fill='white' opacity='.9'/><path d='M18 10v6h5' stroke='%232563eb' stroke-width='1.5' fill='none' stroke-linejoin='round'/><path d='M11 18h10M11 21h7' stroke='%232563eb' stroke-width='1.5' stroke-linecap='round'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-    <h1>CSV Quality Analyzer</h1>
-    
-    <form id="analyzeForm" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="name">Name (required)</label>
-            <input type="text" id="name" name="name" required>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <div class="container nav-inner">
+            <a href="/" class="nav-logo">DataCheck</a>
+            <div class="nav-links">
+                <a href="#how-it-works">How it works</a>
+                <a href="#analyze">Analyze</a>
+                <a href="#contact">Contact</a>
+            </div>
         </div>
-        
-        <div class="form-group">
-            <label for="email">Email (required)</label>
-            <input type="email" id="email" name="email" required>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container hero-inner">
+            <div class="hero-text">
+                <p class="hero-eyebrow">CSV Quality Analysis</p>
+                <h1>Understand your data<br>before you use it.</h1>
+                <p class="hero-desc">
+                    Upload a CSV file and get an instant quality report —
+                    missing values, duplicates, column types, and more.
+                    No account, no storage, no nonsense.
+                </p>
+                <div class="hero-actions">
+                    <a href="#analyze" class="btn btn-primary">Analyze a file</a>
+                    <a href="#how-it-works" class="btn btn-secondary">See how it works</a>
+                </div>
+            </div>
+            <div class="hero-card">
+                <div class="mock-header">
+                    <span class="mock-dot"></span>
+                    <span class="mock-dot"></span>
+                    <span class="mock-dot"></span>
+                    <span class="mock-filename">sales_q3.csv</span>
+                </div>
+                <div class="mock-stats">
+                    <div class="mock-stat">
+                        <span class="mock-val">2 847</span>
+                        <span class="mock-lbl">Rows</span>
+                    </div>
+                    <div class="mock-stat">
+                        <span class="mock-val">11</span>
+                        <span class="mock-lbl">Columns</span>
+                    </div>
+                    <div class="mock-stat">
+                        <span class="mock-val">34</span>
+                        <span class="mock-lbl">Duplicates</span>
+                    </div>
+                </div>
+                <div class="mock-table">
+                    <div class="mock-row mock-row-head">
+                        <span>Column</span><span>Type</span><span>Missing</span>
+                    </div>
+                    <div class="mock-row">
+                        <span>order_id</span>
+                        <span class="badge badge-int">integer</span>
+                        <span class="ok">0%</span>
+                    </div>
+                    <div class="mock-row">
+                        <span>customer</span>
+                        <span class="badge badge-str">string</span>
+                        <span class="ok">0%</span>
+                    </div>
+                    <div class="mock-row">
+                        <span>revenue</span>
+                        <span class="badge badge-flt">float</span>
+                        <span class="warn">4.2%</span>
+                    </div>
+                    <div class="mock-row">
+                        <span>closed_at</span>
+                        <span class="badge badge-dat">date</span>
+                        <span class="err">18.7%</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <div class="form-group">
-            <label for="service">Service (required)</label>
-            <select id="service" name="service" required>
-                <option value="">Select a service</option>
-                <option value="Basic CSV Analysis">Basic CSV Analysis</option>
-            </select>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="steps" id="how-it-works">
+        <div class="container">
+            <h2 class="section-heading">How it works</h2>
+            <div class="step-list">
+                <div class="step">
+                    <span class="step-num">01</span>
+                    <h3>Fill in the form</h3>
+                    <p>Enter your name, email, select a service, and optionally describe what your file contains.</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <span class="step-num">02</span>
+                    <h3>Upload your CSV</h3>
+                    <p>Files up to 5 MB and 100 000 rows. Your data is processed in memory and never stored.</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <span class="step-num">03</span>
+                    <h3>Get your report</h3>
+                    <p>Instant quality metrics per column. Download the full JSON report for your records.</p>
+                </div>
+            </div>
         </div>
-        
-        <div class="form-group">
-            <label for="description">Description (optional)</label>
-            <textarea id="description" name="description" rows="3"></textarea>
+    </section>
+
+    <!-- ANALYZE -->
+    <section class="analyze" id="analyze">
+        <div class="container">
+            <h2 class="section-heading">Analyze your CSV</h2>
+            <p class="section-sub">Results appear on the right as soon as analysis is complete.</p>
+
+            <div class="analyze-grid">
+
+                <!-- FORM -->
+                <div class="form-card">
+                    <form id="analyzeForm" novalidate>
+
+                        <div class="field-row">
+                            <div class="field">
+                                <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
+                                <input type="text" id="name" name="name"
+                                       placeholder="Jane Smith"
+                                       autocomplete="name"
+                                       required aria-required="true"
+                                       aria-describedby="name-err">
+                                <span class="field-err" id="name-err" role="alert" aria-live="polite"></span>
+                            </div>
+                            <div class="field">
+                                <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+                                <input type="email" id="email" name="email"
+                                       placeholder="jane@example.com"
+                                       autocomplete="email"
+                                       required aria-required="true"
+                                       aria-describedby="email-err">
+                                <span class="field-err" id="email-err" role="alert" aria-live="polite"></span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="service">Service <span class="req" aria-hidden="true">*</span></label>
+                            <select id="service" name="service"
+                                    required aria-required="true"
+                                    aria-describedby="service-err">
+                                <option value="">Select a service…</option>
+                                <option value="Basic CSV Analysis">Basic CSV Analysis</option>
+                            </select>
+                            <span class="field-err" id="service-err" role="alert" aria-live="polite"></span>
+                        </div>
+
+                        <div class="field">
+                            <label for="description">
+                                Description
+                                <span class="label-optional">(optional)</span>
+                            </label>
+                            <textarea id="description" name="description" rows="3"
+                                      placeholder="Briefly describe what this CSV contains…"></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label for="csv_file">CSV File <span class="req" aria-hidden="true">*</span>
+                                <a href="/sample-csv" class="sample-link" download>Download a sample CSV to try →</a>
+                            </label>
+                            <div class="file-zone" id="fileZone" tabindex="0" role="button"
+                                 aria-label="Upload CSV file — click or drag and drop"
+                                 aria-describedby="file-err">
+                                <input type="file" id="csv_file" name="csv_file"
+                                       accept=".csv" required aria-required="true">
+                                <div class="file-zone-label" id="fileZoneLabel">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                        <path d="M10 3v10M10 3l-3 3M10 3l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 14v1a2 2 0 002 2h10a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                    <span>Drop file here or <strong>browse</strong></span>
+                                    <span class="file-hint">CSV · max 5 MB</span>
+                                </div>
+                            </div>
+                            <span class="field-err" id="file-err" role="alert" aria-live="polite"></span>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="btn btn-primary btn-block">
+                            <span id="submitLabel">Analyze CSV</span>
+                            <svg id="submitSpinner" class="spinner hidden" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="31.4" stroke-dashoffset="10"/>
+                            </svg>
+                        </button>
+
+                    </form>
+                </div>
+
+                <!-- RESULTS -->
+                <div class="results-card" id="resultsCard" aria-live="polite" aria-label="Analysis results">
+
+                    <div class="results-placeholder" id="resultsPlaceholder">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                            <rect x="6" y="4" width="28" height="32" rx="3" stroke="#d0d5dd" stroke-width="1.5"/>
+                            <path d="M12 14h16M12 20h16M12 26h10" stroke="#d0d5dd" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <p>Your results will appear here after analysis.</p>
+                    </div>
+
+                    <div class="results-body hidden" id="resultsBody">
+                        <div class="results-top">
+                            <div class="results-meta">
+                                <span class="results-filename" id="resultsFilename"></span>
+                                <span class="results-rid" id="resultsRid"></span>
+                            </div>
+                            <button class="btn btn-outline btn-sm" id="downloadBtn">
+                                Download report
+                            </button>
+                        </div>
+
+                        <div class="metrics-row">
+                            <div class="metric">
+                                <span class="metric-n" id="mRows">—</span>
+                                <span class="metric-l">Rows</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-n" id="mCols">—</span>
+                                <span class="metric-l">Columns</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-n" id="mDupes">—</span>
+                                <span class="metric-l">Duplicates</span>
+                            </div>
+                        </div>
+
+                        <div class="col-table-wrap">
+                            <table class="col-table" aria-label="Column breakdown">
+                                <thead>
+                                    <tr>
+                                        <th>Column</th>
+                                        <th>Type</th>
+                                        <th>Missing</th>
+                                        <th>%</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="colBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="results-error hidden" id="resultsError" role="alert">
+                        <!-- Inline illustrated error state -->
+                        <div class="inline-error-illo" aria-hidden="true">
+                            <svg viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Broken file -->
+                                <rect x="64" y="18" width="72" height="88" rx="6" fill="white" stroke="#fca5a5" stroke-width="1.5"/>
+                                <!-- Folded corner -->
+                                <path d="M116 18 L136 38 L116 38 Z" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5" stroke-linejoin="round"/>
+                                <!-- Crack / lightning bolt through file -->
+                                <path d="M96 44 L88 68 L98 68 L90 92" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <!-- X marks on lines -->
+                                <line x1="74" y1="50" x2="82" y2="50" stroke="#fca5a5" stroke-width="1.5" stroke-linecap="round"/>
+                                <line x1="106" y1="78" x2="126" y2="78" stroke="#fca5a5" stroke-width="1.5" stroke-linecap="round"/>
+                                <line x1="106" y1="86" x2="120" y2="86" stroke="#fca5a5" stroke-width="1.5" stroke-linecap="round"/>
+                                <!-- Error badge -->
+                                <circle cx="148" cy="40" r="16" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+                                <path d="M148 32 v10" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="148" cy="46" r="1.5" fill="#ef4444"/>
+                                <!-- Ground shadow -->
+                                <ellipse cx="100" cy="118" rx="38" ry="6" fill="#fee2e2" opacity=".5"/>
+                            </svg>
+                        </div>
+                        <div class="inline-error-text">
+                            <p class="inline-error-title">Analysis failed</p>
+                            <p class="inline-error-msg" id="errMsg"></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-        
-        <div class="form-group">
-            <label for="csv_file">CSV File (required, max 5MB)</label>
-            <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact">
+        <div class="container contact-inner">
+            <div class="contact-text">
+                <h2>Built by Burkay Irmak</h2>
+                <p>
+                    This project was built as a technical assessment — feel free to browse the source or get in touch.
+                </p>
+            </div>
+            <div class="contact-links">
+                <a href="mailto:irmaksabriburkay@gmail.com" class="contact-link">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                        <rect x="2" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/>
+                        <path d="M2 6l7 5 7-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                    irmaksabriburkay@gmail.com
+                </a>
+                <a href="https://linkedin.com/in/irmakburkay" target="_blank" rel="noopener noreferrer" class="contact-link">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                        <rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.4"/>
+                        <path d="M5.5 7.5v5M5.5 5.5v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        <path d="M8.5 12.5v-3a1.5 1.5 0 013 0v3M8.5 9.5v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                    linkedin.com/in/irmakburkay
+                </a>
+                <a href="https://github.com/irmakburkay" target="_blank" rel="noopener noreferrer" class="contact-link">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                        <path d="M9 2a7 7 0 00-2.21 13.64c.35.06.48-.15.48-.34v-1.2c-1.94.42-2.35-.94-2.35-.94-.32-.81-.78-1.02-.78-1.02-.63-.43.05-.42.05-.42.7.05 1.07.72 1.07.72.62 1.07 1.63.76 2.03.58.06-.45.24-.76.44-.93-1.55-.18-3.18-.78-3.18-3.46 0-.76.27-1.39.72-1.88-.07-.18-.31-.89.07-1.85 0 0 .59-.19 1.92.71A6.7 6.7 0 019 5.8c.59 0 1.19.08 1.75.23 1.33-.9 1.92-.71 1.92-.71.38.96.14 1.67.07 1.85.45.49.72 1.12.72 1.88 0 2.69-1.64 3.28-3.2 3.45.25.22.48.65.48 1.31v1.94c0 .19.13.41.48.34A7 7 0 009 2z" stroke="currentColor" stroke-width="1.2" fill="none"/>
+                    </svg>
+                    github.com/irmakburkay
+                </a>
+                <a href="https://github.com/irmakburkay/datacheck" target="_blank" rel="noopener noreferrer" class="contact-link contact-link-repo">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                        <path d="M4 2h7l3 3v11a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/>
+                        <path d="M11 2v4h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                    View source — datacheck
+                </a>
+            </div>
         </div>
-        
-        <button type="submit">Analyze CSV</button>
-    </form>
-    
-    <div id="result" class="hidden">
-        <h2>Analysis Result</h2>
-        <div id="resultContent"></div>
-        <button id="downloadBtn" class="hidden">Download Report</button>
-    </div>
-    
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <span class="footer-brand">DataCheck</span>
+            <span class="footer-note">CSV data is processed in memory and never stored.</span>
+        </div>
+    </footer>
+
     <script src="/static/js/app.js"></script>
 </body>
 </html>

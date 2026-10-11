@@ -3,7 +3,7 @@
 A lightweight web application that analyzes CSV files for common data quality issues.
 Built as a hiring assessment project demonstrating full-stack Python development.
 
-**Current status**: Live deployment verified on PythonAnywhere (Flask/WSGI). All endpoints operational. Tests and fixtures in progress.
+**Current status**: Live and verified on PythonAnywhere (Flask/WSGI). UI redesigned, custom error pages added, all endpoints operational.
 
 **Live URL**: https://irmakburkay.pythonanywhere.com/
 
@@ -130,9 +130,6 @@ datacheck/
 
 ## Local setup
 
-> These instructions will be verified and completed during implementation.
-> The commands below are the intended setup; they have not been tested yet.
-
 ### 1. Clone the repository
 
 ```bash
@@ -162,15 +159,12 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
-# Edit .env with your local values
+# Edit .env — set DATABASE_PATH to a local writable path, e.g. data/requests.db
 ```
 
-### 5. Initialize the database
+### 5. Run the application
 
-The database is created automatically on first startup. The SQLite file will be placed
-at the path specified by `DATABASE_PATH` in your `.env` file.
-
-### 6. Run the application
+The database is created automatically on first startup.
 
 ```bash
 flask --app app.main run
@@ -226,6 +220,7 @@ See `.env.example` for the complete list. Key variables:
 |---|---|---|
 | `GET` | `/` | Serve the service request form |
 | `GET` | `/health` | Health check — returns `{"status": "ok"}` |
+| `GET` | `/sample-csv` | Download the sample CSV file |
 | `POST` | `/api/analyze` | Submit service request + CSV; returns analysis result |
 | `GET` | `/api/download/{id}` | Download analysis as JSON file |
 
@@ -336,7 +331,6 @@ See `docs/DEPLOYMENT.md` for full deployment instructions.
 
 - SQLite is not suitable for high-concurrency production use
 - PythonAnywhere free tier has restricted outbound internet access
-- ASGI support on PythonAnywhere is a beta feature — stability not guaranteed
 - No authentication or access control
 - No data deletion or retention management
 

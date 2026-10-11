@@ -290,3 +290,82 @@ details server-side.
 ## Superseded Decisions
 
 *(None yet. When a decision is replaced, add an entry here referencing the new ADR.)*
+
+---
+
+## ADR-011: UI Redesign — Professional Light Theme
+
+**Status**: Accepted
+**Date**: 2026-10-12
+
+**Decision**: Replace the minimal functional UI with a full landing page design using a professional light theme (white/grey, Inter font, blue accent). No external CSS frameworks or icon libraries — all inline SVG and vanilla CSS.
+
+**Context**: The original UI was a plain form on a grey background. The assessment rubric scores usability and accessibility (10 pts). A landing page structure better communicates the product's value and demonstrates full-stack design capability.
+
+**Design decisions**:
+- Light theme (`#f9fafb` background, `#ffffff` cards) — readable, professional, not trendy
+- Inter (Google Fonts) + JetBrains Mono — standard choices, loaded via `<link>` preconnect
+- One accent colour (`#2563eb`) — avoids visual noise
+- No Tailwind, Bootstrap, or external CSS — assessors can read and understand all styles
+- CSS custom properties (variables) for the full token set — easy to maintain
+
+**Structure**:
+- Sticky nav with smooth-scroll links
+- Hero with eyebrow, headline, description, two CTAs, and a mock data card (right column)
+- "How it works" — three numbered steps
+- Two-column analyze section: form card left, results card right
+- Contact section with email, LinkedIn, GitHub, and repo link cards
+- Minimal footer
+
+**Consequences**:
+- `app/templates/index.html` — full rewrite
+- `app/static/css/styles.css` — full rewrite (~450 lines)
+- `app/static/js/app.js` — full rewrite (new panel state machine, drag-and-drop file zone, inline field errors, HTML escaping on injected content)
+- No new Python dependencies
+- Fully responsive: collapses to single column at 820px, nav links hidden at 540px
+
+---
+
+## ADR-012: Custom Error Pages and Illustrated Inline Error State
+
+**Status**: Accepted
+**Date**: 2026-10-12
+
+**Decision**: Add custom 404 and 500 HTML error pages registered in Flask, and replace the inline results-panel error strip with an illustrated state.
+
+**Context**: Flask serves a plain white default error page for unhandled routes and server errors. This breaks the visual continuity of the site and looks unfinished. The inline error state was a small red strip with an icon that didn't communicate the nature of the problem clearly.
+
+**Implementation**:
+
+1. **`app/templates/404.html`** — custom 404 page
+   - Inline SVG illustration: CSV file falling off a cliff with a `?` thought bubble
+   - "This page doesn't exist." heading with two action buttons (home, analyze)
+   - Uses shared `error.css` for layout
+
+2. **`app/templates/500.html`** — custom 500 page
+   - Inline SVG illustration: server rack with flames on top and a wrench
+   - "Something went wrong on our end." with two action buttons (try again, report)
+   - Report button links to `mailto:irmaksabriburkay@gmail.com`
+
+3. **`app/static/css/error.css`** — new file, error page layout only
+   - Keeps error styles separate from main `styles.css`
+
+4. **Inline error state in `index.html`** — replaced the red strip
+   - Illustrated SVG: broken file with a lightning crack and error badge
+   - "Analysis failed" heading + error message below it
+   - Centred in the results card, proportional to the placeholder state
+
+5. **Flask registration in `app/main.py`**:
+   ```python
+   @app.errorhandler(404)
+   def not_found(e): return render_template("404.html"), 404
+
+   @app.errorhandler(500)
+   def server_error(e): return render_template("500.html"), 500
+   ```
+
+**Consequences**:
+- All error states (404, 500, inline validation) are visually consistent with the main site
+- No new dependencies
+- The 500 handler logs the exception before rendering the page
+- Custom error pages also serve as a fallback for any unregistered routes

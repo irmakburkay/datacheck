@@ -20,6 +20,35 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@app.errorhandler(404)
+def not_found(e):
+    """Custom 404 page."""
+    return render_template("404.html"), 404
+
+
+@app.errorhandler(500)
+def server_error(e):
+    """Custom 500 page."""
+    logger.error(f"Server error: {e}")
+    return render_template("500.html"), 500
+
+
+@app.route("/sample-csv")
+def sample_csv():
+    """Serve the sample CSV file for download."""
+    sample_path = os.path.join(
+        os.path.dirname(__file__), "..", "tests", "fixtures", "valid_basic.csv"
+    )
+    sample_path = os.path.normpath(sample_path)
+    if not os.path.exists(sample_path):
+        return jsonify({"error": "Sample file not found"}), 404
+    with open(sample_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    response = app.response_class(response=content, status=200, mimetype="text/csv")
+    response.headers["Content-Disposition"] = 'attachment; filename="datacheck-sample.csv"'
+    return response
+
+
 @app.route("/health")
 def health():
     return jsonify({"status": "ok"})
