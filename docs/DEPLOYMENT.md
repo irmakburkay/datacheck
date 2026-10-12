@@ -197,6 +197,10 @@ Complete these checks after every deployment. Do not mark as passed until actual
 - [ ] Database record exists after a valid submission (check via console if needed)
 - [ ] Database record persists after application reload
 
+### Rate limiting test
+- [ ] 11th request within 60 seconds returns HTTP 429 with `Retry-After` header
+- [ ] After waiting, requests are accepted again
+
 ### Error handling test
 - [ ] Submit with an invalid email — validation error shown (not a success)
 - [ ] Submit with a non-CSV file — error shown
@@ -207,6 +211,7 @@ Complete these checks after every deployment. Do not mark as passed until actual
 ### Security test
 - [ ] Page source contains no credentials or database paths
 - [ ] Error responses contain no stack traces
+- [ ] Rate limiting active on `/api/analyze` endpoint
 
 ---
 

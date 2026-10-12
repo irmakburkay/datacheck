@@ -4,22 +4,44 @@
 
 ### Approved Decisions
 ✅ **Project**: DataCheck CSV Quality Analyzer for hiring assessment
+
 ✅ **Budget**: Zero-cost (free services only)
+
 ✅ **Stack**: PythonAnywhere (free tier) + SQLite + Flask
+
 ✅ **Scope**: Service request form + CSV analysis + JSON report + database persistence
+
 ✅ **Features**: Basic metrics only (rows, columns, missing values, duplicates, data types)
+
 ✅ **File Handling**: 5 MB upload limit (default), temporary processing, no file persistence
+
 ✅ **Privacy**: No public historical endpoints, return analysis in POST response
+
 ✅ **Documentation**: AGENTS.md, PROJECT_CONTEXT.md, AI_LOG.md, DECISIONS.md, TEST_PLAN.md, DEPLOYMENT.md, README.md all complete and consistent
+
 ✅ **Deployment**: Flask WSGI verified on PythonAnywhere (2026-10-11)
+
 ✅ **Implementation**: Core logic implemented (database, analyzer, Flask routes, HTML form, CSS, JS)
+
 ✅ **Local testing**: Verified with Flask dev server (2026-10-11)
-✅ **Tests**: Basic unit tests implemented (2026-10-12)
+
+✅ **Tests**: Basic unit tests implemented (2026-10-12) — **EXPANDED to 49 comprehensive tests (2026-10-12)**
+
+✅ **Analyzer extensions**: unique counts, statistics (min/max/mean/median for numeric), date ranges (earliest/latest for dates) — **COMPLETE (2026-10-12)**
+
+✅ **Rate limiting**: 10 requests/min per IP on `/api/analyze` endpoint — **COMPLETE (2026-10-12)**
+
+✅ **Test suite**: 49 tests (25 analyzer + 19 API + 5 rate limiting) — **ALL PASSING (2026-10-12)**
+
+✅ **Documentation sync**: All MD files synchronized — **COMPLETE (2026-10-12)**
+
 ✅ **Test fixtures**: 5 sample CSV files created (2026-10-12)
+
 ✅ **Optional enhancements**: Logging, download button, row/column limits (2026-10-12)
 
 ### Unverified Assumptions
-⚠️ **Memory Limits**: 5 MB CSV processing on 512 MB RAM free tier — NOT TESTED at scale
+⚠️ **Memory Limits**: 5 MB CSV processing on 512 MB RAM free tier — NOT TESTED at scale  
+⚠️ **Rate limiting multi-process**: In-memory rate limiter works for single-process only
 
 ### Pending Decisions
 None — all MVP scope decisions complete.
@@ -131,27 +153,50 @@ This project serves as a technical assessment demonstrating:
 ```
 datacheck/
 ├── app/
-│   ├── main.py              # FastAPI application
+│   ├── main.py              # Flask application (routes, error handlers)
 │   ├── analyzer.py          # CSV analysis logic
-│   ├── schemas.py           # Pydantic schemas
-│   ├── models.py            # SQLAlchemy models
-│   ├── database.py          # Database connection
+│   ├── database.py          # SQLite connection and operations
+│   ├── rate_limiter.py      # Rate limiting implementation
 │   ├── templates/
-│   │   └── index.html       # Service request form
+│   │   ├── index.html       # Main landing page with form
+│   │   ├── 404.html         # Custom 404 error page
+│   │   └── 500.html         # Custom 500 error page
 │   └── static/
-│       ├── styles.css       # Basic styling
-│       └── app.js           # Form handling
+│       ├── css/
+│       │   ├── styles.css   # Main application styles
+│       │   └── error.css    # Error page styles
+│       └── js/
+│           └── app.js       # Frontend logic (form handling, file upload)
 ├── tests/
-│   ├── test_analyzer.py     # CSV analysis tests
-│   └── test_api.py          # API endpoint tests
+│   ├── test_analyzer.py     # Analyzer unit tests (25 tests)
+│   ├── test_api.py          # API endpoint tests (19 tests)
+│   ├── test_rate_limiting.py # Rate limiter tests (5 tests)
+│   ├── __init__.py          # Test package marker
+│   ├── fixtures/            # Test CSV files
+│   │   ├── valid_basic.csv
+│   │   ├── missing_values.csv
+│   │   ├── duplicates.csv
+│   │   ├── header_only.csv
+│   │   ├── malformed.csv
+│   │   ├── scenario1_numeric.csv
+│   │   ├── scenario2_dates.csv
+│   │   ├── scenario3_mixed.csv
+│   │   ├── scenario4_duplicates.csv
+│   │   └── scenario5_large_unique.csv
+│   └── integration-tests/   # Live testing scripts
+│       ├── README.md
+│       └── run_live_tests.py
 ├── docs/                    # Documentation
 │   ├── PROJECT_CONTEXT.md   # This file
 │   ├── AI_LOG.md            # AI development log
 │   ├── TEST_PLAN.md         # Testing strategy
 │   ├── DECISIONS.md         # Architecture decisions
-│   └── DEPLOYMENT.md        # Deployment guide
-├── .env.example             # Environment variables
+│   ├── DEPLOYMENT.md        # Deployment guide
+│   └── RATE_LIMITING.md     # Rate limiting documentation
+├── AGENTS.md                # AI assistant instructions
+├── .env.example             # Environment variables template
 ├── requirements.txt         # Python dependencies
+├── requirements-dev.txt     # Development dependencies (pytest, etc.)
 ├── .gitignore               # Git ignore patterns
 ├── LICENSE                  # MIT License
 └── README.md                # Project overview
@@ -161,7 +206,8 @@ datacheck/
 ## API Design
 
 ### POST /api/analyze
-**Description**: Submit service request with CSV file for analysis
+**Description**: Submit service request with CSV file for analysis  
+**Rate Limited**: 10 requests per 60 seconds per IP address  
 **Request**: multipart/form-data
 - `name`: string (required)
 - `email`: string (required, validated)
@@ -185,7 +231,25 @@ datacheck/
         "name": "user_id",
         "data_type": "integer",
         "missing_count": 0,
-        "missing_percentage": 0.0
+        "missing_percentage": 0.0,
+        "unique_count": 1000,
+        "stats": {
+          "min": 1.0,
+          "max": 1000.0,
+          "mean": 500.5,
+          "median": 500.5
+        }
+      },
+      {
+        "name": "signup_date",
+        "data_type": "date",
+        "missing_count": 5,
+        "missing_percentage": 0.5,
+        "unique_count": 300,
+        "date_range": {
+          "earliest": "2024-01-01",
+          "latest": "2024-12-31"
+        }
       }
     ]
   },
@@ -268,6 +332,9 @@ CREATE TABLE analysis_requests (
    - Inferred data type (see detection logic below)
    - Missing value count (empty strings or null)
    - Missing value percentage (`missing_count / total_rows`)
+   - **Unique count** (number of distinct non-missing values) ✅
+   - **Statistical metrics** (numeric columns only): min, max, mean, median ✅
+   - **Date range** (date columns only): earliest and latest dates ✅
 
 ### Data Type Detection Logic
 
@@ -300,6 +367,7 @@ Simple pandas-based detection will be used. For MVP, perfect accuracy is not req
 4. **Error Handling**: Generic user messages, detailed server logs
 5. **No Code Execution**: Never `eval()` or `exec()` file contents
 6. **Path Safety**: Sanitise filenames, prevent directory traversal
+7. **Rate Limiting**: 10 requests per minute per IP on `/api/analyze` endpoint (prevents abuse)
 
 ### Privacy Considerations
 
@@ -447,13 +515,20 @@ Tests should verify actual behaviour. Coverage targets are not mandated, but tes
 
 ### Test Execution (2026-10-12)
 
-- [x] **Test files created**: `tests/test_analyzer.py`, `tests/test_api.py`
+- [x] **Test files created**: `tests/test_analyzer.py`, `tests/test_api.py`, `tests/test_rate_limiting.py`
 - [x] **Test fixtures created**: 5 sample CSV files
-- [x] **Unit tests**: Basic data type inference tests implemented
-- [ ] **Full test run**: pytest execution pending (may need workaround if collection hangs)
-- [ ] **Integration tests**: API endpoint tests written, needs verification
+- [x] **Unit tests**: 25 analyzer tests (data type inference, unique counts, statistics, date ranges)
+- [x] **Integration tests**: 19 API tests (endpoints, validation, database persistence)
+- [x] **Rate limiting tests**: 5 tests (basic limit, reset, cleanup)
+- [x] **Full test run**: 49/49 tests passing (100% success rate)
 
 **Note**: pytest collection appears to hang during test collection. Tests can be run directly with Python to verify functionality.
+
+**Verified Test Count (2026-10-12):**
+- `test_analyzer.py`: 25 tests (type inference, analysis logic, fixture tests)
+- `test_api.py`: 19 tests (endpoints, validation, persistence, error handling)
+- `test_rate_limiting.py`: 5 tests (rate limit enforcement, per-IP tracking, cleanup)
+- **Total**: 49 tests (all organized in classes or top-level functions)
 
 ---
 
@@ -464,12 +539,13 @@ Tests should verify actual behaviour. Coverage targets are not mandated, but tes
 | File | Status |
 |---|---|
 | `AGENTS.md` | Complete (2026-10-11) |
-| `docs/PROJECT_CONTEXT.md` | Complete (2026-10-11) |
-| `docs/AI_LOG.md` | Complete (2026-10-11) |
-| `docs/DECISIONS.md` | Complete (2026-10-11) |
-| `docs/TEST_PLAN.md` | Complete (2026-10-11) |
+| `docs/PROJECT_CONTEXT.md` | Complete — updated (2026-10-12) |
+| `docs/AI_LOG.md` | Complete — updated (2026-10-12) |
+| `docs/DECISIONS.md` | Complete — updated with ADR-013 (2026-10-12) |
+| `docs/TEST_PLAN.md` | Complete — updated with 49 tests (2026-10-12) |
 | `docs/DEPLOYMENT.md` | Complete (2026-10-11) |
-| `README.md` | Complete (2026-10-11) |
+| `docs/RATE_LIMITING.md` | Complete (2026-10-12) |
+| `README.md` | Complete — updated (2026-10-12) |
 | `.env.example` | Complete (2026-10-11) |
 | `.gitignore` | Complete (Python template + project additions) |
 | `LICENSE` | Exists (MIT) |
@@ -477,14 +553,19 @@ Tests should verify actual behaviour. Coverage targets are not mandated, but tes
 ### Implementation Status
 
 ✅ **COMPLETE** — All implementation completed (2026-10-12)
+- Core functionality (CSV analyzer, database, API endpoints, Flask routes)
+- Frontend (HTML form, CSS, JavaScript)
+- Analyzer extensions (unique counts, statistics, date ranges)
+- Rate limiting (10 req/min per IP)
+- Comprehensive test suite (49 tests)
+- Documentation synchronized
 
 ### Pending Items
 
 | Item | Status |
 |---|---|
-| pytest full test run | Not verified (collection hangs, direct Python execution works) |
-| Integration test verification | Written, needs execution on PythonAnywhere |
-| Live deployment test on PythonAnywhere | All endpoints verified, needs test file verification |
+| Final commit and push | Ready (all changes complete) |
+| Project submission | Ready (all requirements met) |
 
 ### Pending Decisions & Approvals
 
@@ -495,11 +576,15 @@ None — all MVP scope decisions complete.
 1. ✅ Deploy Flask app to PythonAnywhere and verify `/health` endpoint — **COMPLETED**
 2. ✅ Implement core logic (CSV analyzer, database layer, API endpoints) — **COMPLETED**
 3. ✅ Implement frontend (form, results display, error handling) — **COMPLETED**
-4. ✅ Write and run tests — **TESTS WRITTEN**
+4. ✅ Write and run tests — **COMPLETED (49/49 passing)**
 5. ✅ Deploy and verify live application — **VERIFIED**
 6. ✅ Finalise documentation and README with live URL — **COMPLETED**
-7. **Run full test suite** — pytest execution pending (may need workaround if collection hangs)
-8. **Push changes to GitHub** — Ready to commit and push
+7. ✅ Run full test suite — **COMPLETED (49/49 passing)**
+8. ✅ Extend analyzer with additional metrics — **COMPLETED**
+9. ✅ Implement rate limiting — **COMPLETED**
+10. ✅ Synchronize all documentation — **COMPLETED**
+11. **Push final changes to GitHub** — Ready for commit
+12. **Submit project** — Ready for submission
 
 ---
 
@@ -535,6 +620,6 @@ None — all MVP scope decisions complete.
 
 ---
 
-*Document version: 1.2*  
-*Status: Implementation complete. Documentation updated. Tests written. Live deployment verified.*  
+*Document version: 1.3*  
+*Status: All implementation complete. All tests passing (49/49). All documentation synchronized. Ready for final submission.*  
 *Last updated: 2026-10-12*

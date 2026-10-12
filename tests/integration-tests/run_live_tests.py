@@ -9,7 +9,7 @@ from pathlib import Path
 import time
 
 # Test configuration
-BASE_URL = "https://irmakburkay.pythonanywhere.com" # "http://127.0.0.1:5000"  # Change to production URL to test live
+BASE_URL = "http://127.0.0.1:5000"  # Change to production URL to test live
 SCENARIOS_DIR = Path(__file__).parent
 
 # ANSI color codes for output

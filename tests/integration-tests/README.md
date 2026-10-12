@@ -144,7 +144,7 @@ Result: 11/11 tests passed (100.0%)
 pip install requests
 ```
 
-(Already included if you installed `requirements.txt`)
+(Already included if you installed `requirements-dev.txt`)
 
 ---
 

@@ -32,9 +32,12 @@ zero-configuration analysis to surface these issues without modifying the origin
 
 - Service request form (name, email, service selection, description, CSV upload)
 - CSV analysis: row count, column count, per-column missing value counts and percentages,
-  duplicate row count, column names, inferred data types
-- Downloadable JSON analysis report
+  duplicate row count, column names, inferred data types, unique counts, statistical metrics
+  (min/max/mean/median for numeric), date ranges (earliest/latest for dates)
+- Downloadable JSON analysis report with one-click download button
+- Rate limiting (10 requests per minute per IP) for DDoS protection
 - Persistent storage of requests and analysis summaries
+- Professional UI with landing page design and illustrated error pages
 - User-friendly error handling and validation
 
 ---
@@ -77,45 +80,58 @@ Data flow:
 
 ---
 
-## Project structure
+## Project Structure
 
 ```
 datacheck/
 ├── app/
-│   ├── __init__.py          # Package marker
-│   ├── main.py              # Flask application entry point and routes
-│   ├── analyzer.py          # CSV analysis logic (pandas)
-│   ├── database.py          # SQLite connection, init, save, get
+│   ├── main.py              # Flask application (routes, error handlers)
+│   ├── analyzer.py          # CSV analysis logic
+│   ├── database.py          # SQLite connection and operations
+│   ├── rate_limiter.py      # Rate limiting implementation
 │   ├── templates/
-│   │   └── index.html       # Service request form
+│   │   ├── index.html       # Main landing page with form
+│   │   ├── 404.html         # Custom 404 error page
+│   │   └── 500.html         # Custom 500 error page
 │   └── static/
 │       ├── css/
-│       │   └── styles.css
+│       │   ├── styles.css   # Main application styles
+│       │   └── error.css    # Error page styles
 │       └── js/
-│           └── app.js
+│           └── app.js       # Frontend logic (form handling, file upload)
 ├── tests/
-│   ├── __init__.py
-│   ├── test_analyzer.py     # Unit tests for CSV analyzer
-│   ├── test_api.py          # Integration tests for API endpoints
-│   └── fixtures/
-│       ├── valid_basic.csv
-│       ├── missing_values.csv
-│       ├── duplicates.csv
-│       ├── header_only.csv
-│       └── malformed.csv
-├── docs/
-│   ├── PROJECT_CONTEXT.md
-│   ├── AI_LOG.md
-│   ├── TEST_PLAN.md
-│   ├── DECISIONS.md
-│   └── DEPLOYMENT.md
-├── AGENTS.md
-├── .env.example
-├── requirements.txt
-├── requirements-dev.txt
-├── .gitignore
-├── LICENSE
-└── README.md
+│   ├── test_analyzer.py     # Analyzer unit tests (25 tests)
+│   ├── test_api.py          # API endpoint tests (19 tests)
+│   ├── test_rate_limiting.py # Rate limiter tests (5 tests)
+│   ├── __init__.py          # Test package marker
+│   ├── fixtures/            # Test CSV files
+│   │   ├── valid_basic.csv
+│   │   ├── missing_values.csv
+│   │   ├── duplicates.csv
+│   │   ├── header_only.csv
+│   │   ├── malformed.csv
+│   │   ├── scenario1_numeric.csv
+│   │   ├── scenario2_dates.csv
+│   │   ├── scenario3_mixed.csv
+│   │   ├── scenario4_duplicates.csv
+│   │   └── scenario5_large_unique.csv
+│   └── integration-tests/   # Live testing scripts
+│       ├── README.md
+│       └── run_live_tests.py
+├── docs/                    # Documentation
+│   ├── PROJECT_CONTEXT.md   # This file
+│   ├── AI_LOG.md            # AI development log
+│   ├── TEST_PLAN.md         # Testing strategy
+│   ├── DECISIONS.md         # Architecture decisions
+│   ├── DEPLOYMENT.md        # Deployment guide
+│   └── RATE_LIMITING.md     # Rate limiting documentation
+├── AGENTS.md                # AI assistant instructions
+├── .env.example             # Environment variables template
+├── requirements.txt         # Python dependencies
+├── requirements-dev.txt     # Development dependencies (pytest, etc.)
+├── .gitignore               # Git ignore patterns
+├── LICENSE                  # MIT License
+└── README.md                # Project overview
 ```
 
 ---
@@ -176,13 +192,25 @@ Open `http://localhost:5000` in your browser.
 
 ## Running tests
 
+The project includes 49 comprehensive tests covering analyzer logic, API endpoints, and rate limiting.
+
 ```bash
 # Install dev dependencies
 pip install -r requirements-dev.txt
 
-# Run all tests
+# Run all tests (49 total)
 python -m pytest tests/ -v
+
+# Run specific test modules
+python -m pytest tests/test_analyzer.py -v  # 25 analyzer tests
+python -m pytest tests/test_api.py -v      # 19 API tests
+python -m pytest tests/test_rate_limiting.py -v  # 5 rate limiting tests
 ```
+
+**Test coverage:**
+- Analyzer: data type inference, unique counts, statistics, date ranges, edge cases
+- API: endpoints, validation, database persistence, error handling
+- Rate limiting: basic limit enforcement, window reset, cleanup
 
 ### Test fixtures
 
@@ -221,7 +249,7 @@ See `.env.example` for the complete list. Key variables:
 | `GET` | `/` | Serve the service request form |
 | `GET` | `/health` | Health check — returns `{"status": "ok"}` |
 | `GET` | `/sample-csv` | Download the sample CSV file |
-| `POST` | `/api/analyze` | Submit service request + CSV; returns analysis result |
+| `POST` | `/api/analyze` | Submit service request + CSV; returns analysis result **(rate limited: 10 req/min)** |
 | `GET` | `/api/download/{id}` | Download analysis as JSON file |
 
 ### POST /api/analyze
@@ -337,7 +365,8 @@ or stored in the database.
 
 ## Deployment
 
-See `docs/DEPLOYMENT.md` for full deployment instructions.
+See `docs/DEPLOYMENT.md` for full deployment instructions.  
+See `docs/RATE_LIMITING.md` for DDoS protection and rate limiting details.
 
 **Live URL**: https://irmakburkay.pythonanywhere.com/ (verified 2026-10-12)
 
@@ -355,6 +384,7 @@ See `docs/DEPLOYMENT.md` for full deployment instructions.
 - PythonAnywhere free tier has restricted outbound internet access
 - No authentication or access control
 - No data deletion or retention management
+- Rate limiting is in-memory (not suitable for multi-process deployment; would need Redis for production)
 
 ---
 

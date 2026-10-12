@@ -227,4 +227,3 @@ data/
 *.sqlite3
 uploads/
 kiro-session-*.zip
-AGENTS.md

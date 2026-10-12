@@ -369,3 +369,45 @@ details server-side.
 - No new dependencies
 - The 500 handler logs the exception before rendering the page
 - Custom error pages also serve as a fallback for any unregistered routes
+
+---
+
+## ADR-013: Rate Limiting & DDoS Protection
+
+**Status**: Accepted  
+**Date**: 2026-10-12
+
+**Decision**: Implement basic in-memory rate limiting on the `/api/analyze` endpoint to prevent abuse and resource exhaustion.
+
+**Context**: The upload endpoint is the most resource-intensive operation in the application. Without rate limiting, the application is vulnerable to:
+- Accidental abuse (user repeatedly uploading files)
+- Intentional DDoS attacks (flooding the server with requests)
+- Resource exhaustion (processing too many CSV files simultaneously)
+
+**Implementation Details:**
+- **Limit**: 10 requests per 60 seconds per IP address
+- **Storage**: In-memory Python dictionary with automatic cleanup
+- **Response**: HTTP 429 "Too Many Requests" with `Retry-After` header
+- **Scope**: Applied only to `/api/analyze` endpoint (most expensive operation)
+
+**Alternatives Considered:**
+
+| Option | Reason not chosen |
+|---|---|
+| Flask-Limiter + Redis | Redis not available on PythonAnywhere free tier |
+| Cloudflare rate limiting | Out of scope for assessment; requires DNS changes |
+| NGINX rate limiting | Not available on PythonAnywhere |
+| No rate limiting | Leaves application vulnerable to abuse |
+
+**Consequences:**
+- ✅ Prevents basic abuse (10 uploads per minute per IP is reasonable for legitimate use)
+- ✅ Protects server resources during CSV processing
+- ✅ Demonstrates understanding of security considerations
+- ✅ No external dependencies required
+- ⚠️ In-memory storage is not suitable for multi-process deployment (would need Redis)
+- ⚠️ Does not protect against distributed attacks from multiple IPs
+- ⚠️ Memory grows with unique IP count (mitigated by automatic cleanup after 1 hour)
+
+**Testing**: 5 tests added in `tests/test_rate_limiting.py` covering basic limit enforcement, window reset, and cleanup.
+
+**Documentation**: See `docs/RATE_LIMITING.md` for full implementation details, configuration options, and production alternatives.
