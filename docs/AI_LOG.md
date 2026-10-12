@@ -801,7 +801,7 @@ success response.
 - `tests/test_api.py` — Expanded from 8 tests to 21 tests
 - `docs/TEST_PLAN.md` — Fully synchronized with implemented tests, status updated to "COMPREHENSIVE TESTS IMPLEMENTED"
 
-**Verification method**: Tests can be run with `.venv\Scripts\python.exe -m pytest tests/ -v`
+**Verification method**: Tests can be run with `python -m pytest tests/ -v`
 
 **Decision rationale**: Comprehensive tests provide:
 1. **Confidence** — Every critical path is verified

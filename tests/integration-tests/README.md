@@ -47,7 +47,8 @@ This directory contains comprehensive test scenarios for the DataCheck API.
 **Test local server** (default):
 ```bash
 # Make sure your Flask app is running on http://127.0.0.1:5000
-python test_scenarios/run_live_tests.py
+# Run from project root
+python .\tests\integration-tests\run_live_tests.py
 ```
 
 **Test production server**:
@@ -58,8 +59,10 @@ BASE_URL = "https://irmakburkay.pythonanywhere.com"
 
 Then run:
 ```bash
-python test_scenarios/run_live_tests.py
+python .\tests\integration-tests\run_live_tests.py
 ```
+
+**Note**: CSV test files are located in `tests/fixtures/` directory (sibling to `integration-tests/`).
 
 ### Expected Output
 
@@ -131,7 +134,7 @@ Result: 11/11 tests passed (100.0%)
 
 2. **Run test suite**:
    ```bash
-   python test_scenarios/run_live_tests.py
+   python .\tests\integration-tests\run_live_tests.py
    ```
 
 3. **Verify all tests pass** (should see 11/11 or 100%)

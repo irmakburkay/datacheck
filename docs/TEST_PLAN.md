@@ -7,7 +7,7 @@
 - **Test fixtures**: `tests/fixtures/` with 5 sample CSV files
 - **Total test count**: 49 tests covering all critical paths
 
-Tests can be run with `.venv\Scripts\python.exe -m pytest tests/ -v`
+Tests can be run with `python -m pytest tests/ -v`
 
 ---
 
@@ -187,19 +187,19 @@ The analyzer has been extended with the following capabilities:
 .venv\Scripts\activate
 
 # Run all tests
-.venv\Scripts\python.exe -m pytest tests/ -v
+python -m pytest tests/ -v
 
 # Run only analyzer tests
-.venv\Scripts\python.exe -m pytest tests/test_analyzer.py -v
+python -m pytest tests/test_analyzer.py -v
 
 # Run only API tests
-.venv\Scripts\python.exe -m pytest tests/test_api.py -v
+python -m pytest tests/test_api.py -v
 
 # Run with coverage report
-.venv\Scripts\python.exe -m pytest tests/ -v --cov=app --cov-report=term
+python -m pytest tests/ -v --cov=app --cov-report=term
 
 # Run specific test
-.venv\Scripts\python.exe -m pytest tests/test_analyzer.py::test_analyze_valid_csv -v
+python -m pytest tests/test_analyzer.py::test_analyze_valid_csv -v
 ```
 
 ---

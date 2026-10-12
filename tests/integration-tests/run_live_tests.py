@@ -9,8 +9,8 @@ from pathlib import Path
 import time
 
 # Test configuration
-BASE_URL = "http://127.0.0.1:5000"  # Change to production URL to test live
-SCENARIOS_DIR = Path(__file__).parent
+BASE_URL = "https://irmakburkay.pythonanywhere.com"  # Change to production URL to test live
+SCENARIOS_DIR = Path(__file__).parent.parent / 'fixtures'  # CSV files are in tests/fixtures/
 
 # ANSI color codes for output
 GREEN = "\033[92m"
